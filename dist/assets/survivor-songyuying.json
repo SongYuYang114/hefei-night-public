@@ -1,0 +1,24 @@
+{
+  "name": "长发红衣人物_带骨骼",
+  "source": "长发红衣人物_带骨骼.blend",
+  "file": "survivor-songyuying.glb",
+  "bones": 80,
+  "vertices": 337364,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "materials": 20,
+  "bytes": 33070088,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9
+}

@@ -1,0 +1,7 @@
+const dgram=require('node:dgram'),crypto=require('node:crypto'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {bindingResponse}=require('../stun.cjs');
+const query=Buffer.alloc(20);query.writeUInt16BE(1);query.writeUInt32BE(0x2112a442,4);crypto.randomBytes(12).copy(query,8);
+const sample=bindingResponse(query,'203.0.113.9',54321);assert.equal(sample.readUInt16BE(0),0x101);assert.equal(sample.readUInt16BE(26)^0x2112,54321);assert.equal(sample[28]^query[4],203);assert(!bindingResponse(Buffer.alloc(1),'1.2.3.4',1));
+const socket=dgram.createSocket('udp4'),host=process.argv[2]||'43.153.216.60',port=Number(process.argv[3]||29805);let retries=0;
+const timer=setInterval(()=>{if(++retries>4){clearInterval(timer);socket.close();console.error('STUN UDP timeout');process.exitCode=1;return;}socket.send(query,port,host);},700);
+socket.on('message',(m)=>{if(m.length<32||!m.subarray(8,20).equals(query.subarray(8,20)))return;clearInterval(timer);assert.equal(m.readUInt16BE(0),0x101);const result={passed:true,host,port,udpSTUN:true,xorMappedPort:m.readUInt16BE(26)^0x2112,transactionMatched:true};fs.writeFileSync(path.join(__dirname,'../../stun-public.json'),JSON.stringify(result,null,2));console.log(result);socket.close();});socket.on('error',e=>{clearInterval(timer);console.error(e.message);socket.close();process.exitCode=1;});socket.send(query,port,host);

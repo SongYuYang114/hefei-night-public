@@ -1,0 +1,19 @@
+{
+  "source": "橘猫_骨骼模型.blend",
+  "sourceSHA256": "1fcff353d1950e926883bc41bbf87a3bb926b4ffef9a4ca273379da705a9ee71",
+  "vertices": 82733,
+  "bones": 36,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Hiss",
+    "Groom",
+    "Recoil",
+    "Scratch"
+  ],
+  "furRetainedFraction": 0.125,
+  "normalizedRuntimeHeight": 1.15,
+  "forward": "+Z",
+  "up": "+Y",
+  "bytes": 6112644
+}

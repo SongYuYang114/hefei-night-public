@@ -1,0 +1,30 @@
+{
+  "source": "User-installed Minecraft assets/indexes/18.json",
+  "unchanged": true,
+  "files": [
+    {
+      "file": "mc-explode-1.ogg",
+      "source": "minecraft/sounds/random/explode1.ogg",
+      "sha1": "fa85b9e7e54c36c9f9d0249ca739444b5e3bb66c",
+      "bytes": 23161
+    },
+    {
+      "file": "mc-explode-2.ogg",
+      "source": "minecraft/sounds/random/explode2.ogg",
+      "sha1": "e55daa373e577f611565d57ec53cd28dcf472f99",
+      "bytes": 28696
+    },
+    {
+      "file": "mc-explode-3.ogg",
+      "source": "minecraft/sounds/random/explode3.ogg",
+      "sha1": "3a92d0fd263265719532041f6f2ea44c7ba2f2e2",
+      "bytes": 28255
+    },
+    {
+      "file": "mc-explode-4.ogg",
+      "source": "minecraft/sounds/random/explode4.ogg",
+      "sha1": "09835e0c3138faf6047506a2b6f1da087c082d2e",
+      "bytes": 27561
+    }
+  ]
+}

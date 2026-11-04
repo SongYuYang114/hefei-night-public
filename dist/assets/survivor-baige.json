@@ -1,0 +1,24 @@
+{
+  "name": "白给",
+  "source": "白给.blend",
+  "file": "survivor-baige.glb",
+  "bones": 80,
+  "vertices": 192337,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "materials": 18,
+  "bytes": 16028784,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9
+}

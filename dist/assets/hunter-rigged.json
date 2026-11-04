@@ -1,0 +1,20 @@
+{
+  "source": "人物模型_带骨骼.blend",
+  "bones": 57,
+  "vertices": 114740,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Elbow"
+  ],
+  "skins": 1,
+  "bytes": 11926640,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "elbowDuration": 0.8,
+  "elbowImpactTime": 0.3,
+  "attackStyle": "horizontal elbow"
+}

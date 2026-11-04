@@ -1,0 +1,13 @@
+# v1.20.0 / protocol 23
+
+Host-authoritative WebRTC star topology. The existing TCP/TLS room server relays authenticated offer/answer/trickle ICE only to members of the same room, with the host as the hub. It remains the fallback for each individual peer. Existing protocols 2–22 remain in separate compatible rooms.
+
+Native Chromium creates one ordered reliable data channel for key transitions, actions, ACKs and health probes; another unordered channel with maxRetransmits=0 carries replaceable snapshots and inputs. Native CompressionStream/DecompressionStream with deflate-raw bounds inflated frames to 256 KiB. Snapshot deltas refer only to receiver-acknowledged baselines; sequence numbers discard late datagrams, and missing baselines request a full refresh. Up to 32 baselines, eight concurrent decodes, one pending encoded state per peer, and channel backpressure limits prevent unbounded queues. Game snapshots run at 10 Hz; inputs at 25 Hz.
+
+P2P snapshots apply the same per-slot hidden-trap filtering as the relay before encoding. Peer identity and slot come from the TLS roster, not a client-supplied slot. Matches are tagged so old-round packets do not affect a new game. Actions have stable request IDs and bounded deduplication across direct/relay paths; unacknowledged requests retry through the relay. A lost channel or a missing health reply switches ongoing traffic to the relay. ICE may reconnect later. The last full state is sent reliably through the relay before the result barrier.
+
+The server also provides a bounded IPv4 STUN binding service on the same UDP port, with no TURN allocations, peer proxying, or administrator privileges. Cloudflare STUN is a backup. A listening UDP socket does not prove a cloud security group permits public UDP; the candidate server UDP probe timed out, while the public Cloudflare STUN probe succeeded. Connectivity is negotiated by actual ICE checks and otherwise falls back to the existing relay.
+
+Tests use real Electron RTCPeerConnections, including five peers, authenticated same-room signaling, direct TCP traffic bypass, per-role private traps, missing delta recovery, deliberately lost action ACK/retry, direct disconnection and relay fallback, reconnect, ordered final result, and a second match. A separate oracle uses the server's existing headless Chromium in a temporary profile for cross-machine validation. Same-host milliseconds must not be presented as public-Internet latency guarantees.
+
+References: [RTCDataChannel options](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel), [STUN RFC 8489](https://www.rfc-editor.org/rfc/rfc8489.html), [Cloudflare STUN endpoints](https://developers.cloudflare.com/realtime/turn/).

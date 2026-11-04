@@ -1,0 +1,23 @@
+{
+  "name": "库奇",
+  "source": "三色短腿狗_带骨骼.blend",
+  "sourceSHA256": "d3abcc88344303c7ee8566e1282cd115a3e7aa49620a59bbbd7d5f744402d886",
+  "file": "kuchi.glb",
+  "bytes": 5579272,
+  "bones": 47,
+  "exportedJoints": 47,
+  "vertices": 44402,
+  "materials": 10,
+  "clips": [
+    "Idle",
+    "Run",
+    "Squat"
+  ],
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "heightMeters": 0.8,
+  "format": "GLB / Y-up / skinned / embedded materials"
+}

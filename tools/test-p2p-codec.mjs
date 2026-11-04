@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import zlib from 'node:zlib';
+import {encodePacket,decodePacket,stateDiff,statePatch,privateSnapshot,cleanPeerInput,MAX_FRAME} from '../dist/p2p-codec.mjs';
+const first={actors:[{x:1,hp:2,item:null,remove:1}],traps:[{id:1,x:3}],active:true},next={actors:[{x:1.5,hp:1,item:'egg'}],traps:[],active:false};assert.deepEqual(statePatch(first,stateDiff(first,next)),next);assert.equal(first.actors[0].hp,2);
+const encoded=await encodePacket({kind:'snapshot',match:1,delta:[0,{actors:Array.from({length:20},()=>next)}]});const decoded=await decodePacket(encoded);assert.equal(decoded.delta[1].actors.length,20);assert(encoded.length<1000);
+await assert.rejects(()=>decodePacket(new Uint8Array([2,1])));await assert.rejects(()=>decodePacket(new Uint8Array(MAX_FRAME+1)));await assert.rejects(()=>encodePacket({value:'x'.repeat(MAX_FRAME)}));
+const compressed=zlib.deflateRawSync(Buffer.alloc(MAX_FRAME+1000,0x78)),bomb=new Uint8Array(compressed.length+1);bomb[0]=1;bomb.set(compressed,1);await assert.rejects(()=>decodePacket(bomb));
+assert.throws(()=>statePatch({},JSON.parse('[1,{"__proto__":[0,{"polluted":true}]},[]]')));assert.equal({}.polluted,undefined);
+const world={survivors:[{},{},{},{}],mailisu:[{id:1}],mines:[0,1,2,3].map(ownerSlot=>({ownerSlot}))};for(let slot=0;slot<5;slot++){const view=privateSnapshot(world,slot);assert.equal(view.mailisu.length,slot===4?1:0);assert(view.mines.every(m=>slot!==4&&m.ownerSlot===slot));}
+const input=cleanPeerInput({keys:{w:true,a:'true'},yaw:Infinity,touch:{x:999,z:-999},commands:[{seq:1,dt:99},{seq:2,dt:.02,keys:{f:true}}]});assert.deepEqual(input.commands.map(c=>c.seq),[2]);assert(input.keys.w&&!input.keys.a);assert.equal(input.yaw,0);assert.deepEqual(input.touch,{x:1,z:-1});
+const result={passed:true,version:'1.25.0',protocol:28,nativeCompressionRoundTrip:true,deltaCopyOnWrite:true,inflateLimit:true,malformedFramesRejected:true,prototypeGuard:true,perSlotPrivateTraps:true,untrustedInputSanitized:true};fs.writeFileSync(new URL('../../p2p-codec-tests.json',import.meta.url),JSON.stringify(result,null,2));console.log(result);

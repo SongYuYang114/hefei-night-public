@@ -1,0 +1,51 @@
+{
+  "name": "hefei-night",
+  "version": "1.29.0",
+  "description": "合肥惊魂夜 · 3D 1v4 追逃游戏",
+  "author": "Hefei Night",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "build": "node tools/build.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "games.hefeinight.desktop",
+    "productName": "合肥惊魂夜",
+    "asar": true,
+    "directories": {
+      "output": "../build-v1.29.0"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "package.json",
+      "dist/**/*",
+      "tools/restoration-smoke.cjs",
+      "signaling.cjs",
+      "signal-cert.pem"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "HefeiNight.exe",
+      "executableName": "HefeiNight",
+      "signExecutable": false,
+      "icon": "resources/app.ico"
+    },
+    "portable": {
+      "requestExecutionLevel": "user"
+    },
+    "compression": "normal"
+  }
+}

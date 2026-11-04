@@ -1,0 +1,24 @@
+{
+  "name": "黑风衣斜挎包人物_带骨骼",
+  "source": "黑风衣斜挎包人物_带骨骼.blend",
+  "file": "survivor-obiwan.glb",
+  "bones": 81,
+  "vertices": 175453,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "materials": 25,
+  "bytes": 18804084,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9
+}

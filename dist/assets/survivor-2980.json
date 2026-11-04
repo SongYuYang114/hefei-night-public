@@ -1,0 +1,24 @@
+{
+  "name": "2980",
+  "source": "2980.blend",
+  "file": "survivor-2980.glb",
+  "bones": 80,
+  "vertices": 199087,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "materials": 19,
+  "bytes": 19700780,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9
+}

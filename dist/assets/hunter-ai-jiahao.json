@@ -1,0 +1,21 @@
+{
+  "source": "VR人物_图2脸型_带骨骼.blend",
+  "sourceSHA256": "88619f04b1b130264f37c8ee51cc67c502f827cd203ee4ed1712d5f471e0c95f",
+  "bones": 82,
+  "bodyVertices": 139570,
+  "vrVertices": 28524,
+  "vrSeparateMesh": true,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "clips": [
+    "Idle",
+    "Walk",
+    "Elbow",
+    "Equip",
+    "Dance"
+  ],
+  "bytes": 14164704
+}

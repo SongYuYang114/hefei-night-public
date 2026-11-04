@@ -1,0 +1,24 @@
+{
+  "name": "猪脸",
+  "source": "猪脸.blend",
+  "file": "survivor-zhulian.glb",
+  "bones": 57,
+  "vertices": 126010,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "materials": 12,
+  "bytes": 10927172,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9
+}

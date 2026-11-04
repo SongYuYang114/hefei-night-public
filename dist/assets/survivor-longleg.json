@@ -1,0 +1,24 @@
+{
+  "name": "猪脸_长腿版",
+  "source": "猪脸_长腿版.blend",
+  "file": "survivor-longleg.glb",
+  "bones": 54,
+  "vertices": 115816,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "materials": 11,
+  "bytes": 9553272,
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9
+}

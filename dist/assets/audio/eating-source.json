@@ -1,0 +1,24 @@
+{
+  "source": "User-installed Minecraft assets/indexes/18.json",
+  "unchanged": true,
+  "files": [
+    {
+      "file": "mc-eat-1.ogg",
+      "source": "minecraft/sounds/random/eat1.ogg",
+      "sha1": "ebf6fcfa3dd26d6f684fd90388221d4ee4a1af1d",
+      "bytes": 6185
+    },
+    {
+      "file": "mc-eat-2.ogg",
+      "source": "minecraft/sounds/random/eat2.ogg",
+      "sha1": "608792c62e053a9ddf9fc3bd493a6da1437ad36a",
+      "bytes": 6605
+    },
+    {
+      "file": "mc-eat-3.ogg",
+      "source": "minecraft/sounds/random/eat3.ogg",
+      "sha1": "d8a23d7672a2e277c8a0c08e131fded629fb5db7",
+      "bytes": 6339
+    }
+  ]
+}
