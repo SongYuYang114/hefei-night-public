@@ -16,8 +16,7 @@ for(const mesh of gltf.meshes)for(const p of mesh.primitives){
  }
 }
 assert.equal(hash(path.join(root,'resources/models/olo.blend')),meta.sourceSHA256);
-assert.equal(hash('C:/Users/Administrator/Desktop/卷发眼镜人物_骨骼模型.blend'),meta.sourceSHA256);
-assert.equal(hash(path.join(root,'dist/assets/portraits/olo.png')),hash('C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-9a76682c-686f-40d3-ba4e-936abfc34f39.png'));
+assert.equal(hash(path.join(root,'dist/assets/portraits/olo.png')),'e9c806380c8cb58e114b097af8bd038423edc5c8d2de6f1f7e753d9c3c3ec5cb');
 assert(bytes.length<20*1024*1024);
 const result={passed:true,version:require('../package.json').version,userBlendAndPortraitMatchOriginals:true,allVerticesHaveNormalizedSkinWeights:true,sevenRequiredAnimationClips:true,originalMaterialsAndBoneAttachmentsPreserved:true,bones:gltf.skins[0].joints.length,materials:gltf.materials.length,vertices,bytes:bytes.length};
 fs.writeFileSync(path.join(root,'../olo-asset.json'),JSON.stringify(result,null,2));console.log(result);

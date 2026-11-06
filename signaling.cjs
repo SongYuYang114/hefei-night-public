@@ -1,7 +1,7 @@
 // Connection setup only. No match simulation, controls, coordinates or relay.
 const tls=require('node:tls'),fs=require('node:fs'),path=require('node:path');
 const {randomUUID,randomInt}=require('node:crypto');
-const SIGNAL_PROTOCOL=1,GAME_PROTOCOL=36,DEFAULT_PORT=29805,DEFAULT_HOST='43.153.216.60';
+const SIGNAL_PROTOCOL=1,GAME_PROTOCOL=36,DEFAULT_PORT=29805,DEFAULT_HOST=process.env.HEFEI_SIGNAL_HOST;
 const MAX_LINE=100000;
 function send(socket,value){if(!socket.destroyed&&socket.writableLength<512*1024)socket.write(JSON.stringify(value)+'\n');else socket.destroy();}
 function listen(socket,onMessage){let buffer='';socket.setNoDelay(true);socket.setKeepAlive(true,10000);socket.setEncoding('utf8');socket.on('data',chunk=>{buffer+=chunk;if(buffer.length>MAX_LINE*2){socket.destroy();return;}let end;while((end=buffer.indexOf('\n'))>=0){const line=buffer.slice(0,end);buffer=buffer.slice(end+1);if(line.length>MAX_LINE){socket.destroy();return;}try{const m=JSON.parse(line);if(m&&typeof m==='object')onMessage(m);}catch{socket.destroy();return;}}if(buffer.length>MAX_LINE)socket.destroy();});socket.on('error',()=>{});}
@@ -24,12 +24,12 @@ async function createSignalingServer({host='0.0.0.0',port=DEFAULT_PORT,tlsOption
   listen(socket,m=>{
    p.lastSeen=Date.now();if(m.type==='ping'){send(socket,{type:'pong'});return;}
    if(!welcomed){
-    if(m.protocol!==SIGNAL_PROTOCOL||![25,26,27,28,29,30,31,32,33,34,35,GAME_PROTOCOL].includes(m.gameProtocol)){fail(p,'联机版本不一致，请使用 v1.34.0。');return;}
+    if(m.protocol!==SIGNAL_PROTOCOL||![25,26,27,28,29,30,31,32,33,34,35,GAME_PROTOCOL].includes(m.gameProtocol)){fail(p,'联机版本不一致，请使用 v1.0.0。');return;}
     const address=socket.remoteAddress||'unknown',budget=budgets.get(address)||{start:Date.now(),attempts:0};if(Date.now()-budget.start>60000){budget.start=Date.now();budget.attempts=0;}budgets.set(address,budget);if(++budget.attempts>40){fail(p,'尝试过于频繁，请稍后重试。');socket.end();return;}
     let room;if(m.type==='create'){
      if(rooms.size>=100){fail(p,'当前房间较多，请稍后重试。');return;}let code;do{code=String(randomInt(100000,1000000));}while(rooms.has(code));room={code,hostId:p.id,gameProtocol:m.gameProtocol,peers:new Map(),open:true};rooms.set(code,room);
     }else if(m.type==='join'){
-     room=rooms.get(String(m.code));if(!room){fail(p,'房间不存在，请检查六位房间号。');return;}if(room.gameProtocol!==m.gameProtocol){fail(p,'房间游戏版本不同，请所有玩家更新到 v1.34.0。');return;}if(!room.open){fail(p,'对局已开始，请等待房主返回选人。');return;}if(room.peers.size>=5){fail(p,'房间已满，最多 5 人。');return;}
+     room=rooms.get(String(m.code));if(!room){fail(p,'房间不存在，请检查六位房间号。');return;}if(room.gameProtocol!==m.gameProtocol){fail(p,'房间游戏版本不同，请所有玩家更新到 v1.0.0。');return;}if(!room.open){fail(p,'对局已开始，请等待房主返回选人。');return;}if(room.peers.size>=5){fail(p,'房间已满，最多 5 人。');return;}
     }else{metrics.rejectedMessages++;socket.destroy();return;}
     welcomed=true;clearTimeout(handshake);p.room=room;room.peers.set(p.id,p);send(socket,{type:'welcome',id:p.id,code:room.code,hostId:room.hostId});if(p.id!==room.hostId)send(room.peers.get(room.hostId).socket,{type:'peer-joined',id:p.id});return;
    }
@@ -49,6 +49,7 @@ async function createSignalingServer({host='0.0.0.0',port=DEFAULT_PORT,tlsOption
  return {port:server.address().port,stats:()=>({...metrics,rooms:rooms.size,sockets:sockets.size}),close:async()=>{clearInterval(janitor);for(const s of sockets)s.destroy();await new Promise(r=>server.close(r));}};
 }
 function connectSignaling({create=false,code='',host=DEFAULT_HOST,port=DEFAULT_PORT,ca=fs.readFileSync(path.join(__dirname,'signal-cert.pem'))}={},onEvent=()=>{}){
+ if(!host)return Promise.reject(Error('未配置房间号服务，请使用管理员提供的运行配置，或使用手动直连。'));
  return new Promise((resolve,reject)=>{
   let opened=false,closed=false;const socket=tls.connect({host,port,ca,rejectUnauthorized:true,minVersion:'TLSv1.2'}),timer=setTimeout(()=>{reject(Error('房间口令服务连接超时，请检查网络，或使用手动直连。'));socket.destroy();},8000);
   const heartbeat=setInterval(()=>send(socket,{type:'ping'}),12000);heartbeat.unref();

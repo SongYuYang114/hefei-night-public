@@ -1,0 +1,46 @@
+name: Windows release
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Validate release version
+        shell: pwsh
+        run: |
+          $version = node -p 'require("./package.json").version'
+          if ($env:GITHUB_REF_TYPE -ne 'tag' -or $env:GITHUB_REF_NAME -ne "v$version") { throw 'Run from the matching vMAJOR.MINOR.PATCH tag.' }
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:game
+      - run: npm run test:launcher
+      - run: npm run build
+      - run: npm run release:audit
+      - name: Sign release manifest
+        shell: pwsh
+        env:
+          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+        run: |
+          if (!$env:RELEASE_SIGNING_KEY) { throw 'RELEASE_SIGNING_KEY is required.' }
+          $keyPath = Join-Path $env:RUNNER_TEMP 'hefei-update-private.pem'
+          [IO.File]::WriteAllText($keyPath, $env:RELEASE_SIGNING_KEY)
+          $env:HEFEI_SIGNING_KEY = $keyPath
+          try { npm run release:prepare; if ($LASTEXITCODE -ne 0) { throw 'Manifest signing failed.' } }
+          finally { Remove-Item -LiteralPath $keyPath -Force }
+      - name: Publish draft for mirror verification
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = node -p 'require("./package.json").version'
+          gh release create "v$version" "artifacts/release/$version/*" --verify-tag --draft --title "合肥惊魂夜 $version" --notes-file "docs/releases/$version.md"
+          if ($LASTEXITCODE -ne 0) { throw 'Draft release upload failed.' }

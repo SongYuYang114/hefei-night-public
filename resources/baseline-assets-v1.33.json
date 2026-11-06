@@ -1,5 +1,4 @@
 {
-  "dist/assets/audio/SOURCE.txt": "15e086401310e5c30d5aa1625f43b6b9fa677c563feefeddaad9a11d969e934e",
   "dist/assets/audio/eating-source.json": "b357e13bbbf239084add3f261d1bfa6380cc8b1e4d23ba5519c170494617e37e",
   "dist/assets/audio/explosion-source.json": "88a4fb30e290749d4fc1ceee5a6ce27eaa1a6a8722db50e7deffda32c8ef878e",
   "dist/assets/audio/jump-source.json": "1a8a190d56f578ec9a78529e8e038b93c9569571b9e719161eab2def465cfe94",
@@ -52,6 +51,7 @@
   "dist/assets/survivor-zhulian.json": "89bfa21470fc465a8a6681b8d6f22663e91ad30d46a9b3f0fc7feb7c40fbc426",
   "dist/vendor/BufferGeometryUtils.js": "c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6",
   "dist/vendor/GLTFLoader.js": "8a7db5a19d1018d79fb9a7a8b8372f317682027321a67d86023002e264ea479d",
-  "dist/vendor/THREE-LICENSE.txt": "4c40a1ef62450b857c3b2aaf294936304cd552d965fbcd9d32d4c5bcf4ba4454",
-  "dist/vendor/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb"
+  "dist/vendor/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+  "dist/assets/audio/SOURCES.md": "584bdbb4fc40d32f6d3b5d1bfeeaebfeb6bda1a2e39a0d3140257c6dddef7350",
+  "dist/vendor/THREE-LICENSE.md": "f57eb9202058667d12aebd854fe8a86d6feaeab51078180df5615bfdbd5cff05"
 }

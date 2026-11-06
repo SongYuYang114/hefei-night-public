@@ -1,6 +1,0 @@
-Minecraft classic Steve hurt sound
-Source asset: minecraft/sounds/random/classic_hurt.ogg
-Mojang asset index: https://piston-meta.mojang.com/v1/packages/50ce48459eb9e29836662862273d7b15d41c2c33/5.json
-Download: https://resources.download.minecraft.net/9d/9d485556b89bf776042080774679c37300bc744b
-SHA-1: 9d485556b89bf776042080774679c37300bc744b
-Original audio retained unchanged.

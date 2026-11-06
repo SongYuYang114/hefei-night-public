@@ -1,3 +1,5 @@
+> 历史资料：仅记录导入版本的实现过程。当前操作见 [玩家指南](../PLAYER-GUIDE.md)、[联机指南](../MULTIPLAYER.md) 和 [发布 SOP](../../SOP.md)。历史协议和中继说明不作为当前指导。
+
 # v1.21.1 / protocol 25 / no game server
 
 `DirectRoom` uses the WebRTC transport/codec from v1.20 but exchanges complete SDP via copied invitation/response envelopes. Each invitation reserves a separate peer ID and connection. Envelopes are compressed, size-limited and bound to protocol, room ID, host ID, assigned guest ID and generation. ICE gathering is bounded; STUN supplies addresses only, and no TURN service or central game signaling is used.

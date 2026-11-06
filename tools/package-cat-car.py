@@ -62,13 +62,13 @@ unit = json.loads((base / 'hakimi-unit.json').read_text(encoding='utf-8'))
 assert unit['randomCats'] == 5 and unit['roamSpeedMetersPerSecond'] == 4 and unit['encounterRadiusMeters'] == 4
 assert json.loads((base / 'cat-car-portable/result.json').read_text(encoding='utf-8'))['packaged']
 assert sha(release / 'HefeiNight.exe') == sha(build / 'HefeiNight.exe')
-for name in ['使用说明.txt', '联机说明.txt', 'EASY-P2P.md', 'P2P-LOSS-FIX.md', 'MODLOG.md']:
-    shutil.copy2(source / name, release / name)
+for name in ['docs/PLAYER-GUIDE.md', 'docs/MULTIPLAYER.md', 'docs/history/EASY-P2P.md', 'docs/history/P2P-LOSS-FIX.md', 'MODLOG.md']:
+    shutil.copy2(source / name, release / Path(name).name)
 for name in ['哈基米炸毛哈气.png', '漫画烟团猫架与3秒眩晕.png', '哈基米打完舔毛.png','汽车撞散猫架压成平面.png']:
     shutil.copy2(base / 'cat-car-portable' / name, release / name)
 
-files = [p for p in source.rglob('*') if p.is_file() and not any(
-    part in ['node_modules', 'build', '.git', '__pycache__'] for part in p.relative_to(source).parts)]
+files = [p for p in source.rglob('*') if p.is_file() and p.name != 'hefei-runtime.json' and not p.name.endswith('.local.json') and not p.name.startswith('.env') and not any(
+    part in ['node_modules', 'build', '.git', '__pycache__', '.local', 'artifacts'] for part in p.relative_to(source).parts)]
 assert not any(p.suffix == '.key' or p.name == 'key.pem' for p in files)
 archive = release / f'合肥惊魂夜_v{version}_完整源码备份.zip'
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as z:

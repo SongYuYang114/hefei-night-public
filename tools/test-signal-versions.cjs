@@ -1,7 +1,7 @@
 const tls=require('node:tls'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const sockets=[],root=path.resolve(__dirname,'..');
 function connect(gameProtocol,code){return new Promise((resolve,reject)=>{
- const socket=tls.connect({host:'43.153.216.60',port:29805,ca:fs.readFileSync(path.join(root,'signal-cert.pem')),rejectUnauthorized:true});sockets.push(socket);let buffer='';const timer=setTimeout(()=>{socket.destroy();reject(Error('Timeout'));},8000);
+ const socket=tls.connect({host:process.env.HEFEI_TEST_HOST,port:29805,ca:fs.readFileSync(path.join(root,'signal-cert.pem')),rejectUnauthorized:true});sockets.push(socket);let buffer='';const timer=setTimeout(()=>{socket.destroy();reject(Error('Timeout'));},8000);
  socket.on('error',e=>{clearTimeout(timer);reject(e);});socket.once('secureConnect',()=>socket.write(JSON.stringify({type:code?'join':'create',protocol:1,gameProtocol,code})+'\n'));
  socket.on('data',data=>{buffer+=data.toString();const end=buffer.indexOf('\n');if(end<0)return;clearTimeout(timer);resolve(JSON.parse(buffer.slice(0,end)));});
 });}

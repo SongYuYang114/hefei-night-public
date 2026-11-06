@@ -4,6 +4,8 @@ node_modules/
 /dist-packages/
 release/
 releases/
+!docs/releases/
+!docs/releases/*.md
 *.exe
 *.zip
 *.7z
@@ -26,3 +28,8 @@ key.pem
 Thumbs.db
 .idea/
 .vscode/
+.local/
+hefei-runtime.json
+*.local.json
+/artifacts/
+/test-output/

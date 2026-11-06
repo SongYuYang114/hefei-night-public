@@ -1,3 +1,5 @@
+> 历史资料：仅记录导入版本的实现过程。当前操作见 [玩家指南](../PLAYER-GUIDE.md)、[联机指南](../MULTIPLAYER.md) 和 [发布 SOP](../../SOP.md)。历史协议和中继说明不作为当前指导。
+
 # v1.19.0 / protocol 22
 
 Observed 2026-11-01: server load 0.08, available RAM ~894 MB; one TCP connection had 60,604 B Send-Q, 57,756 B notsent, 273 ms RTT and ~42 kbit/s delivery rate. Lifetime bytes_retrans/bytes_sent was ~18%; this is not a packet-loss percentage. User screenshot showed relay 116 ms, command ACK 33,810 ms and host 12 FPS.
