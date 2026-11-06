@@ -43,7 +43,7 @@ function parseAddress(address){
  const match=/^(tls:\/\/)?([a-zA-Z0-9.-]+)(?::([0-9]{1,5}))?$/.exec(String(address||'').trim());
  if(!match)throw Error('请输入服务器 IP 或域名，格式如 192.168.1.10:29804');
  const port=Number(match[3]||DEFAULT_PORT);if(port<1||port>65535)throw Error('端口必须是 1–65535');
- return {host:match[2],port,secure:!!match[1]||match[2]==='43.153.216.60'};
+ return {host:match[2],port,secure:!!match[1]};
 }
 async function createRoomServer({port=DEFAULT_PORT,host='0.0.0.0',tlsOptions=null}={}){
  const rooms=new Map(),sockets=new Set();let stun=null;
@@ -140,7 +140,7 @@ async function createRoomServer({port=DEFAULT_PORT,host='0.0.0.0',tlsOptions=nul
 }
 async function connectRoom({address,name,slot,character,code,create=false,protocol=PROTOCOL},onEvent){
  const target=parseAddress(address);
- const ca=target.host==='43.153.216.60'?fs.readFileSync(path.join(__dirname,'server-cert.pem')):undefined;
+ const ca=process.env.HEFEI_RELAY_CA?fs.readFileSync(process.env.HEFEI_RELAY_CA):undefined;
  const socket=target.secure?tls.connect({host:target.host,port:target.port,ca,rejectUnauthorized:true}):net.createConnection({host:target.host,port:target.port});
  socket.hefeiCompression=protocol>=12;socket.hefeiLatest=protocol>=22;let pingTimer,relayRtt=null,pingId=0,match=0;const pingSent=new Map();
  const result=await new Promise((resolve,reject)=>{

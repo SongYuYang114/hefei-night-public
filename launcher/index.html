@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src hefei:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>合肥惊魂夜 · 登录器</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <section class="scene" aria-labelledby="game-title">
+      <div class="scene-copy"><p class="edition">合肥惊魂夜</p><h1 id="game-title">今夜，<br>一起逃出生天。</h1><p class="tagline">四人寻找黎明，一人守住黑夜。</p></div>
+      <img class="character" src="hefei://game/assets/cover.png" alt="合肥惊魂夜封面人物" draggable="false">
+      <div class="scene-bottom"><span>3D 非对称追逃</span><span>1 位追杀者 / 4 位求生者</span></div>
+    </section>
+    <section class="panel" aria-label="游戏启动与更新">
+      <header><span class="wordmark">合肥惊魂夜</span><button class="text-button" id="help" type="button">游戏指南</button></header>
+      <div class="welcome"><p class="section-label">准备进入黑夜</p><h2>准备好了吗？</h2><p>检查更新，或直接开始你的下一场追逐。</p></div>
+      <section class="updates" aria-labelledby="update-title">
+        <div class="version-row"><h3 id="update-title">游戏版本</h3><span id="current-version">—</span></div>
+        <p id="status" role="status" aria-live="polite">准备检查更新</p>
+        <progress id="progress" aria-label="更新下载进度" max="100" hidden></progress>
+        <p class="transfer" id="transfer" hidden></p>
+        <p class="source" id="source">优先从 GitHub Release 获取更新</p>
+        <div class="update-actions"><button id="check" class="secondary" type="button">检查更新</button><button id="update" class="secondary" type="button" hidden>下载更新</button><button id="cancel" class="text-button" type="button" hidden>取消</button></div>
+      </section>
+      <details id="release-notes"><summary>本次更新内容</summary><p id="notes">版本分发从 1.0.0 开始，保留现有角色、地图与 P2P 联机玩法。</p></details>
+      <footer><button id="play" class="primary" type="button">启动游戏</button><p>支持单人 AI 对局与最多五人 P2P 联机</p></footer>
+    </section>
+  </main>
+  <script src="renderer.js"></script>
+</body>
+</html>

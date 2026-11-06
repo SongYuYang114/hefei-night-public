@@ -15,6 +15,6 @@ crontab -l | grep -Fx "@reboot $BASE/start-signaling.sh" >/dev/null
 sha256sum "$BASE/signaling-releases/1.34.0/signaling.cjs"
 sha256sum "$BASE/tls/server.crt"
 `;
-const output=execFileSync('ssh',['-o','BatchMode=yes','-o','ConnectTimeout=10','friend@43.153.216.60','sh -s'],{input:script,encoding:'utf8',windowsHide:true});const hashes=output.trim().split('\n').map(s=>s.split(' ')[0]);
+const output=execFileSync('ssh',['-o','BatchMode=yes','-o','ConnectTimeout=10',process.env.HEFEI_SSH_TARGET,'sh -s'],{input:script,encoding:'utf8',windowsHide:true});const hashes=output.trim().split('\n').map(s=>s.split(' ')[0]);
 const hash=p=>createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex');assert.equal(hashes[0],hash('signaling.cjs'));assert.equal(hashes[1],hash('signal-cert.pem'));
 const report={passed:true,version:require('../package.json').version,checkedUTC:new Date().toISOString(),gameServerPaused:true,gamePort29804Closed:true,gameStartupStillPaused:true,signalingActive:true,signalingOnly:true,signalingPort:29805,signalingTLS:true,signalingAutoRestart:true,signalingBootStartup:true,userAuthorizedSignaling:true,signalingSHA256:hashes[0],publicCertificateSHA256:hashes[1]};fs.writeFileSync(path.join(root,'../legendary-service-verification.json'),JSON.stringify(report,null,2));console.log(report);

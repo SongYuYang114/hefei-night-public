@@ -1,3 +1,5 @@
+> 历史资料：仅记录导入版本的实现过程。当前操作见 [玩家指南](../PLAYER-GUIDE.md)、[联机指南](../MULTIPLAYER.md) 和 [发布 SOP](../../SOP.md)。历史协议和中继说明不作为当前指导。
+
 # v1.29.0 / game protocol 32
 
 The default flow is Create Room → share one six-digit room number → Join Room. One number supports the host and four guests. The client automatically exchanges WebRTC offers, answers and ICE candidates; there are no copied SDP envelopes in the default UI. A manual, fully serverless exchange remains under Advanced.

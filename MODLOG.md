@@ -1,3 +1,9 @@
+# 1.0.0 正式分发序列
+
+在组织仓库 v1.34.1 玩法与协议 36 基线上增加登录器、GitHub Release 优先更新、私有配置的备用源、签名与哈希校验及发布 SOP。角色、素材与玩法保持现状。旧 TXT 已整理到 docs/，第三方许可完整保留。详见 [更新说明](docs/releases/1.0.0.md)。
+
+以下为导入版本的历史记录，版本号不属于新分发序列。
+
 # v1.34.1 · Olo opacity · 2026-11-05
 
 Removed Olo's body transparency. Body and clothing now have opacity 1, opaque rendering and depth writes, in character preview and all match views. Spectacle lenses retain ordinary clear optics. Removed the transparency claim from the skill description. Model, portrait, both item slots, yzm rescue and protocol 36 are unchanged. Validation uses the final portable EXE appearance assertion and package resource audit; unchanged gameplay verification retains its original v1.34.0 reports.

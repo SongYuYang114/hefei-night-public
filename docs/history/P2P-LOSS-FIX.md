@@ -1,3 +1,5 @@
+> 历史资料：仅记录导入版本的实现过程。当前操作见 [玩家指南](../PLAYER-GUIDE.md)、[联机指南](../MULTIPLAYER.md) 和 [发布 SOP](../../SOP.md)。历史协议和中继说明不作为当前指导。
+
 # v1.21.1 / protocol 25
 
 The v1.21.0 input sender repeated 120 ms of commands. Burst loss could exceed that window. Host fallback advanced the actor without advancing the command ACK, so the client replayed movement that was already present in an authoritative snapshot. Reliable key edges also acknowledged commands without simulating their movement.

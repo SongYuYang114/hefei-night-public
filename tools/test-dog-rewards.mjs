@@ -40,6 +40,6 @@ const p=createGeneratorProjection(new T.Texture()),g={progress:0,projection:p},c
 updateGeneratorProjections([g],camera,1,'playing');assert(!p.root.visible);g.progress=1;updateGeneratorProjections([g],camera,2,'playing');assert(p.root.visible);assert(p.face.quaternion.equals(camera.quaternion));assert.equal(p.material.uniforms.time.value,2);
 for(const mode of ['menu','result']){updateGeneratorProjections([g],camera,3,mode);assert(!p.root.visible);}
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),asset=fs.readFileSync(new URL('../dist/assets/generator-projection.jpg',import.meta.url));
-assert.equal(hash(asset),hash(fs.readFileSync('C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-58e6986b-8e9a-47d5-9041-e9f70fe806ce.jpg')));
+assert.equal(hash(asset),'56290aac4322089b48cbec37362d1a24b3ba46ffa822795613f95fdc3e4ee500');
 const result={passed:true,version:JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url))).version,protocol:36,threeSuccessfulDogKicksGrantOneItem:true,fullInventoryQueuesRewards:true,oloChestAndRewardExcludeEggAndHealing:true,legendaryRatePreserved:true,randomKickMaxHeight:320,randomKickMaxDuration:6,randomForceHostSnapshot:true,extremeFlightStaysInsideMapAndLands:true,projectionOnlyAfterRepair:true,projectionBillboardsAndHidesAfterMatch:true,projectionRawAssetSHA256:hash(asset),...integrated};
 fs.writeFileSync(new URL('../../dog-rewards-unit.json',import.meta.url),JSON.stringify(result,null,2));console.log(result);

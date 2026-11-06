@@ -8,7 +8,7 @@ async function pack(value){const bytes=await encodePacket(value);return 'HFY1.'+
 async function unpack(code,type){
  const text=String(code||'').replace(/\s+/g,'');if(text.length>100000||!/^HFY1\.[a-zA-Z0-9_-]+$/.test(text))throw Error('请粘贴完整的 HFY1. 开头的连接信息。');
  let value;try{const raw=atob(text.slice(5).replace(/-/g,'+').replace(/_/g,'/'));value=await decodePacket(Uint8Array.from(raw,c=>c.charCodeAt(0)));}catch{throw Error('连接信息损坏，请重新复制。');}
- if(value?.protocol!==DIRECT_PROTOCOL||value.type!==type||!validId(value.roomId)||!validId(value.hostId)||!validId(value.guestId)||!validId(value.generation)||typeof value.sdp!=='string'||value.sdp.length>32768)throw Error('连接信息或游戏版本不一致，请双方使用 v1.34.0。');return value;
+ if(value?.protocol!==DIRECT_PROTOCOL||value.type!==type||!validId(value.roomId)||!validId(value.hostId)||!validId(value.guestId)||!validId(value.generation)||typeof value.sdp!=='string'||value.sdp.length>32768)throw Error('连接信息或游戏版本不一致，请双方使用 v1.0.0。');return value;
 }
 export class DirectRoom extends PeerRoom{
  constructor({deliver,onStatus=()=>{},...options}={}){

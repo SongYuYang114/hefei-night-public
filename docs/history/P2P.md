@@ -1,3 +1,5 @@
+> 历史资料：仅记录导入版本的实现过程。当前操作见 [玩家指南](../PLAYER-GUIDE.md)、[联机指南](../MULTIPLAYER.md) 和 [发布 SOP](../../SOP.md)。历史协议和中继说明不作为当前指导。
+
 # v1.20.0 / protocol 23
 
 Host-authoritative WebRTC star topology. The existing TCP/TLS room server relays authenticated offer/answer/trickle ICE only to members of the same room, with the host as the hub. It remains the fallback for each individual peer. Existing protocols 2–22 remain in separate compatible rooms.
