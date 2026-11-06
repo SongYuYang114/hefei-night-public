@@ -1,3 +1,4 @@
+import {applyCatKickPose} from './cat-kick.mjs';
 import * as T from 'three';
 const COATS=['#dc9855','#e1d5bb','#69747d','#3f4651','#b99077'];
 function add(parent,geometry,material,x=0,y=0,z=0){const m=new T.Mesh(geometry,material);m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;}
@@ -19,13 +20,13 @@ export function createCatVisual(coat=0){
  batchPieces(head,mouth);batchPieces(bristles);root.userData={body,head,paws,tail,bristles,mouth,hiss,time:0};return root;
 }
 export function poseCatVisual(root,cat,dt=0){
- if(root.userData.poseLegendary){root.userData.poseLegendary(cat,dt);return;}
- const u=root.userData,flat=cat.phase==='flattened';if(!flat)u.time+=dt;const h=cat.phase==='hissing'||cat.phase==='warning',g=cat.phase==='grooming',stride=cat.moving&&!flat?Math.sin(cat.travel*7)*.5:0;
+ if(root.userData.poseLegendary){root.userData.poseLegendary(cat,dt);applyCatKickPose(root,cat);return;}
+ const u=root.userData,flat=cat.phase==='flattened'||cat.phase==='kicked'&&cat.kickFlatTime>0;if(!flat)u.time+=dt;const h=cat.phase==='hissing'||cat.phase==='warning',g=cat.phase==='grooming',stride=cat.moving&&!flat?Math.sin(cat.travel*7)*.5:0;
  root.visible=cat.phase!=='fighting';root.position.set(cat.x,flat?.065:0,cat.z);root.rotation.y=cat.angle;root.scale.set(flat?1.45:1,flat?.045:1,flat?1.45:1);
  u.body.position.y=h?.54:.48+(cat.moving&&!flat?Math.abs(Math.sin(cat.travel*7))*.035:0);u.body.scale.set(h?1.13:1,h?1.13:1,1);
  u.head.rotation.set(g?.6+Math.sin(u.time*6)*.15:h?-.15:0,0,g?-.27:0);
  u.paws.forEach((paw,i)=>paw.rotation.set(g&&i===3?-2+Math.sin(u.time*6)*.12:stride*(i%3===0?1:-1),0,g&&i===3?-.45:0));
- u.tail.rotation.set(h?-.5:0,flat?0:Math.sin(u.time*(h?12:2))*(h?.15:.35),0);u.bristles.visible=h;u.hiss.visible=h;u.hiss.scale.setScalar(1+Math.sin(u.time*9)*.07);u.mouth.scale.y=h?1:g?.18:.4;
+ u.tail.rotation.set(h?-.5:0,flat?0:Math.sin(u.time*(h?12:2))*(h?.15:.35),0);u.bristles.visible=h;u.hiss.visible=h;u.hiss.scale.setScalar(1+Math.sin(u.time*9)*.07);u.mouth.scale.y=h?1:g?.18:.4;applyCatKickPose(root,cat);
 }
 export function createCatFightVisual(){
  const root=new T.Group();root.name='HakimiComicFight';const dust=new T.MeshStandardMaterial({color:'#e7dfcf',roughness:1,flatShading:true}),ink=new T.MeshBasicMaterial({color:'#263b44',side:T.BackSide}),gold=new T.MeshBasicMaterial({color:'#ffd36a',toneMapped:false,side:T.DoubleSide}),white=new T.MeshBasicMaterial({color:'#fff9dd',toneMapped:false}),cloud=new T.Group();root.add(cloud);

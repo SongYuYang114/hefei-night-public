@@ -1,14 +1,14 @@
 import {PeerRoom} from './p2p.mjs';
 import {encodePacket,decodePacket,privateSnapshot} from './p2p-codec.mjs';
 import {DIRECT_ICE_SERVERS,collectCandidates,candidateSummary,connectionDiagnosis} from './direct-connect.mjs';
-export const DIRECT_PROTOCOL=32;
+export const DIRECT_PROTOCOL=36;
 const now=()=>performance.now(),clone=v=>JSON.parse(JSON.stringify(v));
 const uid=()=>crypto.randomUUID(),nameOf=v=>String(v||'玩家').replace(/[\u0000-\u001f<>]/g,'').slice(0,16),validId=v=>typeof v==='string'&&/^[a-zA-Z0-9-]{8,64}$/.test(v);
 async function pack(value){const bytes=await encodePacket(value);return 'HFY1.'+btoa(Array.from(bytes,b=>String.fromCharCode(b)).join('')).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 async function unpack(code,type){
  const text=String(code||'').replace(/\s+/g,'');if(text.length>100000||!/^HFY1\.[a-zA-Z0-9_-]+$/.test(text))throw Error('请粘贴完整的 HFY1. 开头的连接信息。');
  let value;try{const raw=atob(text.slice(5).replace(/-/g,'+').replace(/_/g,'/'));value=await decodePacket(Uint8Array.from(raw,c=>c.charCodeAt(0)));}catch{throw Error('连接信息损坏，请重新复制。');}
- if(value?.protocol!==DIRECT_PROTOCOL||value.type!==type||!validId(value.roomId)||!validId(value.hostId)||!validId(value.guestId)||!validId(value.generation)||typeof value.sdp!=='string'||value.sdp.length>32768)throw Error('连接信息或游戏版本不一致，请双方使用 v1.29.0。');return value;
+ if(value?.protocol!==DIRECT_PROTOCOL||value.type!==type||!validId(value.roomId)||!validId(value.hostId)||!validId(value.guestId)||!validId(value.generation)||typeof value.sdp!=='string'||value.sdp.length>32768)throw Error('连接信息或游戏版本不一致，请双方使用 v1.34.0。');return value;
 }
 export class DirectRoom extends PeerRoom{
  constructor({deliver,onStatus=()=>{},...options}={}){
@@ -25,7 +25,7 @@ export class DirectRoom extends PeerRoom{
  }
  emit(message){this.deliver(message);}
  error(message,id=this.id){if(id===this.id)this.emit({type:'error',message});else this.reliable(this.peers.get(id),{kind:'notice',message});}
- descriptor(options,id){return {id,name:nameOf(options.name),slot:Number.isInteger(options.slot)&&options.slot>=0&&options.slot<=4?options.slot:0,character:Number.isInteger(options.character)&&options.character>=0&&options.character<=5?options.character:0,hunterCharacter:options.hunterCharacter===1?1:0,ready:false};}
+ descriptor(options,id){return {id,name:nameOf(options.name),slot:Number.isInteger(options.slot)&&options.slot>=0&&options.slot<=4?options.slot:0,character:Number.isInteger(options.character)&&options.character>=0&&options.character<=6?options.character:0,hunterCharacter:options.hunterCharacter===1?1:0,ready:false};}
  createHost(options={}){
   this.reset();this.id=uid();this.roomId=uid();this.admitted=true;const peer=this.descriptor(options,this.id);if(peer.slot===4)peer.character=null;
   this.room={type:'room',protocol:DIRECT_PROTOCOL,code:'纯P2P',hostId:this.id,phase:'lobby',players:[peer],p2p:{stun:false,pure:true}};
@@ -76,20 +76,20 @@ export class DirectRoom extends PeerRoom{
   const invitation=this.invitations.get(p.id);if(!this.host||!invitation?.info||p.reliable?.readyState!=='open'||p.fast?.readyState!=='open')return;
   if(this.room.phase!=='lobby'||this.room.players.length>=5){this.reliable(p,{kind:'notice',message:'房间已开始或人数已满，请等待下一局。'});return;}
   const info=invitation.info,slots=new Set(this.room.players.map(v=>v.slot));info.slot=slots.has(info.slot)?[0,1,2,3,4].find(v=>!slots.has(v)):info.slot;
-  const chars=new Set(this.room.players.filter(v=>v.slot!==4).map(v=>v.character));info.character=info.slot===4?null:chars.has(info.character)?[0,1,2,3,4,5].find(v=>!chars.has(v)):info.character;
+  const chars=new Set(this.room.players.filter(v=>v.slot!==4).map(v=>v.character));info.character=info.slot===4?null:chars.has(info.character)?[0,1,2,3,4,5,6].find(v=>!chars.has(v)):info.character;
   this.invitations.delete(p.id);this.room.players.push(info);this.publish();
  }
  publish(){if(!this.host)return;for(const peer of this.room.players)if(peer.id!==this.id)this.reliable(this.peers.get(peer.id),{kind:'roster',room:clone(this.room)});this.emit(clone(this.room));}
  validRoster(value){
   if(!value||value.hostId!==this.room?.hostId||value.protocol!==DIRECT_PROTOCOL||!['lobby','playing','result'].includes(value.phase)||!Array.isArray(value.players)||value.players.length>5)return false;
-  const ids=new Set(),slots=new Set(),chars=new Set();for(const p of value.players){if(!validId(p.id)||ids.has(p.id)||!Number.isInteger(p.slot)||p.slot<0||p.slot>4||slots.has(p.slot))return false;ids.add(p.id);slots.add(p.slot);if(p.slot===4&&![0,1].includes(p.hunterCharacter??0))return false;if(p.slot!==4){if(!Number.isInteger(p.character)||p.character<0||p.character>5||chars.has(p.character))return false;chars.add(p.character);}p.name=nameOf(p.name);p.ready=p.ready===true;}return ids.has(this.id)&&ids.has(value.hostId);
+  const ids=new Set(),slots=new Set(),chars=new Set();for(const p of value.players){if(!validId(p.id)||ids.has(p.id)||!Number.isInteger(p.slot)||p.slot<0||p.slot>4||slots.has(p.slot))return false;ids.add(p.id);slots.add(p.slot);if(p.slot===4&&![0,1].includes(p.hunterCharacter??0))return false;if(p.slot!==4){if(!Number.isInteger(p.character)||p.character<0||p.character>6||chars.has(p.character))return false;chars.add(p.character);}p.name=nameOf(p.name);p.ready=p.ready===true;}return ids.has(this.id)&&ids.has(value.hostId);
  }
  command(id,message){
   const peer=this.room?.players.find(v=>v.id===id);if(!this.host||!peer||this.room.phase==='playing')return;
   if(message.type==='ready'){peer.ready=message.ready===true;this.publish();return;}
   if(message.type!=='select'||!Number.isInteger(message.slot)||message.slot<0||message.slot>4)return;
   if(message.slot===4){if(message.hunterCharacter!==undefined&&![0,1].includes(message.hunterCharacter))return;if(this.room.players.some(p=>p!==peer&&p.slot===4)){this.error('追杀者已有人选择。',id);return;}peer.slot=4;peer.character=null;if(message.hunterCharacter!==undefined)peer.hunterCharacter=message.hunterCharacter;}
-  else{const character=message.character??message.slot;if(!Number.isInteger(character)||character<0||character>5)return;if(this.room.players.some(p=>p!==peer&&p.slot!==4&&p.character===character)){this.error('该角色已有人选择。',id);return;}const occupied=new Set(this.room.players.filter(p=>p!==peer).map(p=>p.slot));const slot=peer.slot!==4?peer.slot:[0,1,2,3].find(n=>!occupied.has(n));if(slot===undefined){this.error('逃生者阵营已满。',id);return;}peer.slot=slot;peer.character=character;}
+  else{const character=message.character??message.slot;if(!Number.isInteger(character)||character<0||character>6)return;if(this.room.players.some(p=>p!==peer&&p.slot!==4&&p.character===character)){this.error('该角色已有人选择。',id);return;}const occupied=new Set(this.room.players.filter(p=>p!==peer).map(p=>p.slot));const slot=peer.slot!==4?peer.slot:[0,1,2,3].find(n=>!occupied.has(n));if(slot===undefined){this.error('逃生者阵营已满。',id);return;}peer.slot=slot;peer.character=character;}
   peer.ready=false;this.publish();
  }
  control(p,m){

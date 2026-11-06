@@ -30,6 +30,7 @@ export function stepCurryMine(mine,dt,actors,obstacles,random=Math.random){
  return target;
 }
 export function stepCurryFlight(actor,dt,obstacles){
+ if(immuneToNegative(actor)){actor.launchTime=0;return;}
  if(!(actor.launchTime>0))return;
  if(actor.state!=='active'){actor.launchTime=0;return;}
  let left=Math.min(dt,actor.launchTime);

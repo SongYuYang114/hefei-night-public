@@ -1,3 +1,4 @@
+import {isOlo} from './olo.mjs';
 import {LIMIT,blocked,lineClear,findPath,distance} from './core.mjs';
 import {jumpGrounded} from './jump.mjs';
 export const KUCHI_SPEED=20,KUCHI_WANDER_SECONDS=5,KUCHI_SQUAT_SECONDS=3,KUCHI_SLOW_SECONDS=5,KUCHI_SLOW_FACTOR=.5,KUCHI_STUN_SECONDS=10,KUCHI_KICK_RANGE=2.3,KUCHI_KICK_SECONDS=.55;
@@ -38,7 +39,7 @@ export function stepKuchi(dog,dt,obstacles=[],random=Math.random){
 export function stepMailisu(traps,survivors,obstacles=[],previous=new Map()){
  const hits=[];for(let i=traps.length-1;i>=0;i--){const trap=traps[i];
   const target=survivors.find(a=>{
-   if(a.state!=='active'||!jumpGrounded(a))return false;
+   if(isOlo(a)||a.state!=='active'||!jumpGrounded(a))return false;
    const start=previous.get(a),dx=start?a.x-start.x:0,dz=start?a.z-start.z:0,d=dx*dx+dz*dz;
    // Ignore discontinuities such as teleport/rescue; test continuous walking paths.
    const t=start&&d<4&&d>0?Math.max(0,Math.min(1,((trap.x-start.x)*dx+(trap.z-start.z)*dz)/d)):1;

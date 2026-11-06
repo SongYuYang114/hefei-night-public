@@ -1,8 +1,9 @@
 import {HUNTERS} from './vr-hunter.mjs';
-const slugs=['baige','2980','zhulian','songyuying','longleg','obiwan'];
-const portrait=id=>id>=6?HUNTERS[id-6].portrait:`./assets/portraits/${slugs[id]}.png`;
+const slugs=['baige','2980','zhulian','songyuying','longleg','obiwan','olo'];
+const hunterStart=slugs.length;
+const portrait=id=>id===1?'./assets/portraits/2980.jpg':id>=hunterStart?HUNTERS[id-hunterStart].portrait:`./assets/portraits/${slugs[id]}.png`;
 const element=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
-function avatar(id){const frame=element('span','selection-avatar'),img=element('img');img.src=portrait(id);if(id===7)img.style.cssText='height:100%;top:0;object-fit:cover;object-position:50% 52%';img.alt='';img.draggable=false;frame.append(img);return frame;}
+function avatar(id){const frame=element('span','selection-avatar'),img=element('img');img.src=portrait(id);frame.dataset.character=String(id);if(id<hunterStart)frame.classList.add('photo-avatar');if(id===hunterStart+1)img.style.cssText='height:100%;top:0;object-fit:cover;object-position:50% 52%';img.alt='';img.draggable=false;frame.append(img);return frame;}
 
 export function createSelectionLobby({names,onChoose}){
  const pool=document.getElementById('character-pool'),list=document.getElementById('room-players'),cards=[];
@@ -12,15 +13,15 @@ export function createSelectionLobby({names,onChoose}){
   button.onclick=()=>{if(!button.disabled)onChoose(id);};pool.append(button);cards.push(button);
  });
  return {update({role,index,hunterIndex=0,room,id,ready}){
-  const selected=role==='hunter'?6+hunterIndex:index,own=room?.players.find(p=>p.id===id),locked=room?.phase==='playing';
-  const occupied=new Map((room?.players||[]).filter(p=>p.id!==id).map(p=>[p.slot===4?6+(p.hunterCharacter||0):p.character??p.slot,p]));
+  const selected=role==='hunter'?hunterStart+hunterIndex:index,own=room?.players.find(p=>p.id===id),locked=room?.phase==='playing';
+  const occupied=new Map((room?.players||[]).filter(p=>p.id!==id).map(p=>[p.slot===4?hunterStart+(p.hunterCharacter||0):p.character??p.slot,p]));
   cards.forEach((card,i)=>{
-   const used=i>=6?(room?.players||[]).find(p=>p.id!==id&&p.slot===4):occupied.get(i);card.hidden=role==='hunter'?i<6:i>=6;
+   const used=i>=hunterStart?(room?.players||[]).find(p=>p.id!==id&&p.slot===4):occupied.get(i);card.hidden=role==='hunter'?i<hunterStart:i>=hunterStart;
    card.disabled=!ready||!!locked||!!used;card.classList.toggle('selected',i===selected);card.classList.toggle('occupied',!!used);
    card.setAttribute('aria-pressed',String(i===selected));card.querySelector('.card-state').textContent=used?'已被选择':i===selected?'当前选择':'';
-   card.title=used?`${used.name} 已选择${i>=6?HUNTERS[i-6].name:names[i]}`:'';
+   card.title=used?`${used.name} 已选择${i>=hunterStart?HUNTERS[i-hunterStart].name:names[i]}`:'';
   });
-  document.getElementById('pool-count').textContent=role==='hunter'?'02 / 追杀者':'06 / 逃生者';
+  document.getElementById('pool-count').textContent=role==='hunter'?'02 / 追杀者':'07 / 逃生者';
   document.getElementById('selection-faction').textContent=role==='hunter'?'追杀者 · 追击 / 囚禁':'逃生者 · 协作 / 逃离';
   document.getElementById('team-mode').textContent=room?`${room.players.length} / 5 人已加入`:'单人对局 · AI 补位';
   document.getElementById('selection-room-hint').textContent=room?'选角会同步给房间内所有玩家':'邀请朋友联机，或直接开始与 AI 对局';
@@ -34,7 +35,7 @@ export function createSelectionLobby({names,onChoose}){
   list.replaceChildren();
   for(let slot=0;slot<5;slot++){
    const player=room?.players.find(p=>p.slot===slot),local=room?player?.id===id:slot===(role==='hunter'?4:Math.min(3,index));
-   const character=slot===4?6+(player?.hunterCharacter??hunterIndex):player?.character??choices.get(slot),name=character>=6?HUNTERS[character-6].name:names[character];
+   const character=slot===4?hunterStart+(player?.hunterCharacter??hunterIndex):player?.character??choices.get(slot),name=character>=hunterStart?HUNTERS[character-hunterStart].name:names[character];
    const row=element('div',`room-player selection-player${local?' is-you':''}${slot===4?' is-hunter':''}`);row.dataset.slot=String(slot);row.dataset.character=String(character);
    const details=element('div','selection-player-info'),title=element('strong','',name),nickname=element('span','',player?`${player.name}${local?' · 你':''}`:local?'你':'AI 补位');
    details.append(title,nickname);

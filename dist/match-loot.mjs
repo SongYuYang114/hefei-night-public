@@ -1,7 +1,27 @@
 import {HUNTER_WARNING_DISTANCE,LIMIT,blocked,distance,findPath} from './core.mjs?v=car-horizontal-1';
+import {isOlo} from './olo.mjs';
 export const CHEST_COUNT=5,CHEST_SECONDS=10,EGG='egg',EXHAUST='exhaust',HOT_POT='hotpot',SELF_RESCUE='yzm',FRIED_RICE='friedrice',WEIRD_MUSHROOM='mushroom',LEGENDARY_DROP_RATE=.05,MEAL_SECONDS=0;
 export const ITEMS={friedrice:{name:'蛋炒饭',hint:'无敌红眼女 · 追捕追杀者与宋玉莹 · 顶鞋底 15 秒'},mushroom:{name:'诡异香菇',rarity:'legendary',hint:'传奇 · 召唤同角色 AI 替身 · 受击一次消失'},egg:{name:'不可思议的蛋',hint:'重置技能冷却与次数'},exhaust:{name:'华莱！',hint:'尾气命中双方 · 失明 5 秒'},hotpot:{name:'火锅油条',hint:'脱离追杀者警告范围 · 瞬间回复一格生命'},yzm:{name:'yzm',hint:'被囚禁时按 E · 自救一次'}};
 export const rollChestLoot=(rng=Math.random)=>{const n=Math.max(0,Math.min(1,rng()));return n>=1-LEGENDARY_DROP_RATE?WEIRD_MUSHROOM:[EGG,EXHAUST,HOT_POT,SELF_RESCUE,FRIED_RICE][Math.min(4,Math.floor(n/(1-LEGENDARY_DROP_RATE)*5))];};
+export const canReceiveItem=(actor,item)=>!!ITEMS[item]&&(!isOlo(actor)||![EGG,HOT_POT].includes(item));
+export const itemSlots=actor=>isOlo(actor)?['item','itemQ']:['item'];
+export const freeItemSlot=actor=>itemSlots(actor).find(slot=>!actor[slot])||null;
+export const hasItem=(actor,item)=>itemSlots(actor).some(slot=>actor[slot]===item);
+export function putItem(actor,item,random=Math.random){const slot=freeItemSlot(actor);if(!slot)return null;actor[slot]=resolveActorLoot(actor,item,random);actor.lastLootSlot=slot;return slot;}
+export function resolveActorLoot(actor,item,random=Math.random){
+ if(canReceiveItem(actor,item))return item;
+ const pool=[EXHAUST,SELF_RESCUE,FRIED_RICE];return pool[Math.min(2,Math.max(0,Math.floor(random()*3)))];
+}
+export const rollActorLoot=(actor,random=Math.random)=>resolveActorLoot(actor,rollChestLoot(random),random);
+export function recordDogKick(actor,random=Math.random){
+ actor.kuchiKicks=(actor.kuchiKicks||0)+1;actor.dogRewards??=[];
+ if(actor.kuchiKicks%3!==0)return false;actor.dogRewards.push(rollActorLoot(actor,random));return true;
+}
+export function grantDogReward(actor,random=Math.random){
+ for(const slot of itemSlots(actor))if(actor[slot]&&!canReceiveItem(actor,actor[slot]))actor[slot]=resolveActorLoot(actor,actor[slot],random);
+ if(actor.state!=='active'||!freeItemSlot(actor)||!actor.dogRewards?.length)return null;
+ const slot=putItem(actor,actor.dogRewards.shift(),random);return actor[slot];
+}
 export function cancelMeal(actor){actor.mealActive=false;actor.mealTime=0;}
 export function consumeHotPot(actor,hunter){
  if(actor.state!=='active'||actor.stun>0||actor.item!==HOT_POT)return {ok:false,reason:'inactive'};
@@ -34,14 +54,14 @@ export function randomMatchSpawns(obstacles,rng=Math.random,reserved=[]){
   try{const hunter=randomFloorPoints(1,obstacles,rng,[...reserved,...survivors],p=>survivors.every(s=>distance(p,s)>=HUNTER_SPAWN_DISTANCE))[0];return [...survivors,hunter];}catch(error){if(round===7)throw error;}
  }
 }
-export function advanceChest(actor,chest,dt,obstacles){
- if(actor.state!=='active'||actor.item||chest.opened||distance(actor,chest)>=2.4)return false;
+export function advanceChest(actor,chest,dt,obstacles,random=Math.random){
+ if(actor.state!=='active'||!freeItemSlot(actor)||chest.opened||distance(actor,chest)>=2.4)return false;
  // Walls cannot be used to open a chest from the other side.
  const steps=Math.ceil(distance(actor,chest)/.2);
  for(let i=1;i<steps;i++)if(blocked(actor.x+(chest.x-actor.x)*i/steps,actor.z+(chest.z-actor.z)*i/steps,obstacles,.15))return false;
  chest.progress=Math.min(1,chest.progress+Math.max(0,dt)/CHEST_SECONDS);
  if(chest.progress<1)return false;
- chest.opened=true;actor.item=chest.loot||EGG;return true;
+ chest.opened=true;putItem(actor,chest.loot||EGG,random);return true;
 }
 export function consumeEgg(actor){
  if(actor.state!=='active'||actor.item!==EGG)return false;

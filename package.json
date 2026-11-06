@@ -1,6 +1,6 @@
 {
   "name": "hefei-night",
-  "version": "1.29.0",
+  "version": "1.34.1",
   "description": "合肥惊魂夜 · 3D 1v4 追逃游戏",
   "author": "Hefei Night",
   "private": true,
@@ -18,7 +18,7 @@
     "productName": "合肥惊魂夜",
     "asar": true,
     "directories": {
-      "output": "../build-v1.29.0"
+      "output": "../build-v1.34.1"
     },
     "files": [
       "main.cjs",
@@ -26,8 +26,10 @@
       "package.json",
       "dist/**/*",
       "tools/restoration-smoke.cjs",
+      "tools/portrait-smoke.cjs",
       "signaling.cjs",
-      "signal-cert.pem"
+      "signal-cert.pem",
+      "tools/olo-smoke.cjs"
     ],
     "win": {
       "target": [

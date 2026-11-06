@@ -1,0 +1,26 @@
+{
+  "name": "Olo",
+  "source": "卷发眼镜人物_骨骼模型.blend",
+  "sourceSHA256": "f077e6c86cb8e32929e340fa6474c882b149b9d1f0e1d404a8c7f5db01eba92b",
+  "file": "survivor-olo.glb",
+  "bones": 70,
+  "vertices": 94657,
+  "materials": 31,
+  "clips": [
+    "Idle",
+    "Walk",
+    "Run",
+    "HurtIdle",
+    "HurtWalk",
+    "Interact",
+    "Captured"
+  ],
+  "forward": [
+    0,
+    0,
+    1
+  ],
+  "height": 1.9,
+  "bytes": 8408096,
+  "originalCurlyHairGlassesClothingPreserved": true
+}

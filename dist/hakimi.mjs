@@ -1,3 +1,4 @@
+import {stepCatKick} from './cat-kick.mjs';
 import {LIMIT,distance,blocked,lineClear,move} from './core.mjs';
 import {immuneToNegative} from './vr-hunter.mjs';
 
@@ -31,7 +32,7 @@ function scatter(cat,other,obstacles,random){
  }cat.angle=base;
 }
 // The fighting pair occupies its visible comic cloud while both individual models are hidden.
-export function catCarTargets(cats,fights){return cats.filter(c=>c.phase!=='flattened').map(cat=>{
+export function catCarTargets(cats,fights){return cats.filter(c=>!['flattened','kicked'].includes(c.phase)).map(cat=>{
  const fight=cat.phase==='fighting'?fights.find(f=>f.id===cat.fightId):null;
  return {cat,x:fight?.x??cat.x,z:fight?.z??cat.z,radius:fight?1.15:.4};
 });}
@@ -60,6 +61,7 @@ export function stepCats(cats,fights,dt,actors=[],obstacles=[],random=Math.rando
  const events=[];let left=Math.max(0,dt);
  while(left>1e-7){const step=Math.min(.04,left);left-=step;
   for(const cat of cats){cat.cooldown=Math.max(0,cat.cooldown-step);cat.reactionCooldown=Math.max(0,(cat.reactionCooldown||0)-step);cat.scratchCooldown=Math.max(0,(cat.scratchCooldown||0)-step);
+   if(cat.phase==='kicked'){stepCatKick(cat,step,obstacles);continue;}
    if(cat.phase==='flattened'){cat.moving=false;cat.phaseTime=Math.max(0,cat.phaseTime-step);if(cat.phaseTime<=1e-7){Object.assign(cat,{phase:'roaming',phaseTime:0,cooldown:CAT_PEACE_SECONDS,target:null});events.push({type:'recover',cat});}}
    else if(cat.phase==='scratching'){
     cat.moving=false;cat.phaseTime=Math.max(0,cat.phaseTime-step);
@@ -110,5 +112,5 @@ export function stepCats(cats,fights,dt,actors=[],obstacles=[],random=Math.rando
   }
  }return events;
 }
-export const catState=cat=>Object.fromEntries(['id','x','z','angle','coat','legendary','reactionCooldown','scratchCooldown','scratchSerial','scratchStep','focusId','phase','phaseTime','travel','moving','cooldown','fightId'].map(k=>[k,cat[k]]));
+export const catState=cat=>Object.fromEntries(['id','x','z','angle','coat','legendary','reactionCooldown','scratchCooldown','scratchSerial','scratchStep','focusId','phase','phaseTime','travel','moving','cooldown','fightId','kickVX','kickVZ','kickFlatTime','kickDuration','kickHeight','kickPower','kickSerial'].map(k=>[k,cat[k]]));
 export const catFightState=f=>Object.fromEntries(['id','x','z','catIds','phase','phaseTime','windup'].map(k=>[k,f[k]]));

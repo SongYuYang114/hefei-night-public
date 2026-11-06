@@ -31,7 +31,7 @@ async function smokeTest(win){const result=await require('./tools/restoration-sm
 app.whenReady().then(async () => {
   if(serverMode){app.quit();return;}
   const root = path.join(app.getAppPath(), 'dist');
-const types = {'.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.mjs':'text/javascript; charset=utf-8', '.glb':'model/gltf-binary', '.json':'application/json', '.png':'image/png', '.svg':'image/svg+xml', '.ogg':'audio/ogg', '.oga':'audio/ogg'};
+const types = {'.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.mjs':'text/javascript; charset=utf-8', '.glb':'model/gltf-binary', '.json':'application/json', '.png':'image/png', '.jpg':'image/jpeg', '.svg':'image/svg+xml', '.ogg':'audio/ogg', '.oga':'audio/ogg'};
   protocol.handle('hefei', async request => {
     try {
       const url = new URL(request.url);
@@ -60,7 +60,7 @@ const types = {'.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf
   await mainWindow.loadURL('hefei://game/index.html'+(portraitFolder?'?export-portraits=1':testFolder?'?network-test=1':''));
   if(portraitFolder){
     await fs.mkdir(portraitFolder,{recursive:true});
-    for(const [index,name] of ['baige','2980','zhulian','songyuying','longleg','obiwan','ai-jiahao'].entries()){
+    for(const [index,name] of ['baige','2980','zhulian','songyuying','longleg','obiwan','olo','ai-jiahao'].entries()){
       const data=await mainWindow.webContents.executeJavaScript(`import(document.querySelector('script[type="module"][src]').src).then(game=>game.renderCharacterPortrait(${index}))`);
       await fs.writeFile(path.join(portraitFolder,name+'.png'),Buffer.from(data.split(',')[1],'base64'));
     }

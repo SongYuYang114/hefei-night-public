@@ -1,3 +1,4 @@
+import {applyOloAppearance} from './olo-visual.mjs';
 import * as THREE from 'three';
 
 export function cloneModel(source){
@@ -18,7 +19,7 @@ export function createCharacterPreview(container){
  return {renderer,
   setModel(source,clip,companion){
    if(model){pivot.remove(model);model.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();});}
-   const primary=cloneModel(source);primary.visible=true;primary.rotation.y=0;if(!clip)primary.traverse(o=>{if(o.type==='Group')o.rotation.set(0,0,0);});model=primary;companionMixer=null;container.dataset.companion='';
+   const primary=cloneModel(source);primary.visible=true;if(primary.getObjectByName('Survivor_olo'))applyOloAppearance(primary);primary.rotation.y=0;if(!clip)primary.traverse(o=>{if(o.type==='Group')o.rotation.set(0,0,0);});model=primary;companionMixer=null;container.dataset.companion='';
    if(companion){model=new THREE.Group();primary.position.x=-.35;model.add(primary);const pet=cloneModel(companion.model);pet.visible=true;pet.position.set(.8,0,.2);pet.rotation.set(0,0,0);const stars=pet.getObjectByName('KuchiStun');if(stars)stars.visible=false;model.add(pet);companionMixer=new THREE.AnimationMixer(pet);companionMixer.clipAction(companion.clip).play();container.dataset.companion='kuchi';}
    pivot.add(model);pivot.rotation.y=0;container.dataset.angle='0';model.updateMatrixWorld(true);
    const bounds=new THREE.Box3().setFromObject(model),center=bounds.getCenter(new THREE.Vector3());height=bounds.max.y-bounds.min.y;modelWidth=bounds.max.x-bounds.min.x;

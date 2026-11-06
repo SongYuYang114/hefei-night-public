@@ -1,4 +1,5 @@
 import {stepDrivenCar,driveSteer} from './drive-car.mjs';
+import {oloSpeedMultiplier} from './olo.mjs';
 import {move,clamp} from './core.mjs';
 import {consumeJumpInput} from './jump.mjs';
 import {kuchiSpeedFactor} from './kuchi.mjs';
@@ -16,6 +17,7 @@ export function moveControlled(actor,input,dt,obstacles,isHunter=false){
  const n=Math.hypot(dx,dz);if(n<=0)return;dx/=Math.max(1,n);dz/=Math.max(1,n);
  const yaw=input.yaw||0,mx=dx*Math.cos(yaw)+dz*Math.sin(yaw),mz=-dx*Math.sin(yaw)+dz*Math.cos(yaw);
  let speed=isHunter?4.55:3.7;if(actor.dash>0)speed=8.2;if(actor.slow>0)speed*=.63;if(isHunter&&actor.swing>0)speed*=.4;if(!isHunter&&actor.legRush>0)speed*=4;if(!isHunter)speed*=kuchiSpeedFactor(actor);
+ if(!isHunter)speed*=oloSpeedMultiplier(actor);
  actor.moving=move(actor,mx*speed*dt,mz*speed*dt,obstacles)>.001;actor.angle=Math.atan2(mx,mz);
 }
 function replayStep(actor,command,obstacles,isHunter,carObstacles=obstacles){
@@ -51,7 +53,7 @@ export class MotionTrack{
  constructor(delay=.10){this.delay=delay;this.samples=[];this.clock=null;this.received=0;}
  push(time,pose,now){
   const last=this.samples.at(-1);if(last&&time<=last.time)return;
-  const snap=!last||pose.state!==last.pose.state||Math.hypot(pose.x-last.pose.x,pose.z-last.pose.z)>Math.max(3,(pose.driving||last.pose.driving?60:20)*(time-last.time))||pose.launchTime>(last.pose.launchTime||0)+.15;
+  const snap=!last||pose.state!==last.pose.state||pose.kickSerial!==last.pose.kickSerial||Math.hypot(pose.x-last.pose.x,pose.z-last.pose.z)>Math.max(3,(pose.driving||last.pose.driving?60:20)*(time-last.time))||pose.launchTime>(last.pose.launchTime||0)+.15;
   if(snap){this.samples=[];this.clock=time-this.delay;}
   this.samples.push({time,pose:{...pose}});if(this.samples.length>32)this.samples.shift();this.received=now;
  }
@@ -59,7 +61,7 @@ export class MotionTrack{
   const newest=this.samples.at(-1);if(!newest)return null;
   this.clock=Math.max(this.clock??newest.time,newest.time-this.delay);this.clock=Math.min(this.clock+dt,newest.time+Math.min(.10,Math.max(0,(now-this.received)/1000)));
   const target=Math.min(this.clock,newest.time+Math.min(.10,Math.max(0,(now-this.received)/1000)));
-  for(let i=1;i<this.samples.length;i++){const b=this.samples[i],a=this.samples[i-1];if(target<=b.time){const t=clamp((target-a.time)/(b.time-a.time),0,1);return {...b.pose,x:a.pose.x+(b.pose.x-a.pose.x)*t,z:a.pose.z+(b.pose.z-a.pose.z)*t,angle:angleLerp(a.pose.angle||0,b.pose.angle||0,t),...(a.pose.jumpSerial===b.pose.jumpSerial?{jumpTime:(a.pose.jumpTime||0)+((b.pose.jumpTime||0)-(a.pose.jumpTime||0))*t}:{}),...(a.pose.drivePhase===b.pose.drivePhase&&b.pose.driveAirTime>0?{driveAirTime:a.pose.driveAirTime+(b.pose.driveAirTime-a.pose.driveAirTime)*t}:{})};}}
+  for(let i=1;i<this.samples.length;i++){const b=this.samples[i],a=this.samples[i-1];if(target<=b.time){const t=clamp((target-a.time)/(b.time-a.time),0,1);return {...b.pose,x:a.pose.x+(b.pose.x-a.pose.x)*t,z:a.pose.z+(b.pose.z-a.pose.z)*t,angle:angleLerp(a.pose.angle||0,b.pose.angle||0,t),...(a.pose.state==='kicked'&&b.pose.state==='kicked'?{phaseTime:a.pose.phaseTime+(b.pose.phaseTime-a.pose.phaseTime)*t}:{}),...(a.pose.jumpSerial===b.pose.jumpSerial?{jumpTime:(a.pose.jumpTime||0)+((b.pose.jumpTime||0)-(a.pose.jumpTime||0))*t}:{}),...(a.pose.drivePhase===b.pose.drivePhase&&b.pose.driveAirTime>0?{driveAirTime:a.pose.driveAirTime+(b.pose.driveAirTime-a.pose.driveAirTime)*t}:{})};}}
   const previous=this.samples.at(-2);if(previous&&newest.pose.moving!==false&&newest.pose.state!=='captured'&&(newest.pose.stun||0)<=0){const interval=newest.time-previous.time,extra=clamp(target-newest.time,0,.10);let vx=(newest.pose.x-previous.pose.x)/interval,vz=(newest.pose.z-previous.pose.z)/interval;const speed=Math.hypot(vx,vz);const cap=newest.pose.driving?45:20;if(speed>cap){vx*=cap/speed;vz*=cap/speed;}return {...newest.pose,x:newest.pose.x+vx*extra,z:newest.pose.z+vz*extra};}
   return {...newest.pose};
  }

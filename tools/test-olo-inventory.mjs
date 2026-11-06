@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {context} from './test-restored.mjs';
+import {advanceChest,grantDogReward,freeItemSlot,itemSlots} from '../dist/match-loot.mjs';
+import {applyOloAppearance,OLO_OPACITY} from '../dist/olo-visual.mjs';
+import * as T from '../dist/vendor/three.module.js';
+const a={characterId:6,x:0,z:0,state:'active',item:null,itemQ:null};
+const chest=loot=>({x:0,z:0,progress:0,opened:false,loot});
+assert(advanceChest(a,chest('exhaust'),10,[]));assert.equal(a.item,'exhaust');assert.equal(a.itemQ,null);
+assert(advanceChest(a,chest('yzm'),10,[]));assert.equal(a.itemQ,'yzm');assert.equal(a.item,'exhaust');assert.equal(freeItemSlot(a),null);
+assert(!advanceChest(a,chest('mushroom'),10,[]));
+a.dogRewards=['mushroom'];assert.equal(grantDogReward(a),null);a.itemQ=null;assert.equal(grantDogReward(a),'mushroom');assert.equal(a.item,'exhaust');assert.equal(a.itemQ,'mushroom');
+for(const slot of itemSlots(a))for(const forbidden of ['egg','hotpot']){a[slot]=forbidden;grantDogReward(a,()=>.5);assert(!['egg','hotpot'].includes(a[slot]));}
+const ordinary={...a,characterId:0,item:'exhaust',itemQ:null};assert.equal(freeItemSlot(ordinary),null);assert(!advanceChest(ordinary,chest('yzm'),10,[]));
+const base=new T.MeshStandardMaterial(),model=new T.Group(),mesh=new T.Mesh(new T.BoxGeometry(),base);model.add(mesh);applyOloAppearance(model);assert.equal(mesh.material.opacity,OLO_OPACITY);assert.equal(base.opacity,1);assert(!mesh.material.transparent);applyOloAppearance(model);assert.equal(mesh.material.opacity,OLO_OPACITY);
+const result=vm.runInContext(`(()=>{
+ role='survivor';$('survivor-choice').value='6';start(790);clearCats();clearKuchi();const a=current(),t=survivors[0];Object.assign(hunter,{x:32,z:-32});
+ Object.assign(a,{x:0,z:14,item:'exhaust',itemQ:'yzm'});capture(t);Object.assign(t,{x:0,z:16});
+ const blockedOrdinary=(()=>{rescue(t,5,false,a);return t.state==='captured';})();
+ const usedQ=useActorItem(a,false,'itemQ'),quick=t.state==='active'&&t.hp===1&&t.invincible===6&&a.itemQ===null&&a.item==='exhaust';
+ a.itemQ='yzm';const noTarget=!useActorItem(a,false,'itemQ')&&a.itemQ==='yzm';capture(t);Object.assign(t,{x:20,z:20});const noRemote=!useActorItem(a,false,'itemQ')&&a.itemQ==='yzm';
+ Object.assign(t,{x:0,z:16});a.item='yzm';a.itemQ='exhaust';const usedE=useActorItem(a,false,'item')&&t.state==='active'&&a.item===null&&a.itemQ==='exhaust';
+ const qExhaust=useActorItem(a,false,'itemQ')&&a.itemQ===null&&a.item===null;
+ a.item='exhaust';a.itemQ='friedrice';const snap=netActorState(a);const replicated=snap.item==='exhaust'&&snap.itemQ==='friedrice';
+ capture(t);Object.assign(t,{x:0,z:16});a.item='exhaust';a.itemQ='yzm';survivorAIOriginal(a,.02);const aiQuickRescue=t.state==='active'&&a.itemQ===null&&a.item==='exhaust';
+ back();start(791);const reset=current().item===null&&current().itemQ===null;back();return {blockedOrdinary,usedQ,quick,noTarget,noRemote,usedE,qExhaust,replicated,aiQuickRescue,reset};
+})()`,context);
+for(const [k,v]of Object.entries(result))assert(v,k);
+const report={passed:true,version:JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url))).version,protocol:36,chestsFillEThenQ:true,fullTwoSlotsRejectChest:true,queuedRewardsFillFreeSlot:true,bothSlotsFilterForbiddenLoot:true,ordinarySurvivorsKeepOneSlot:true,opaqueAppearanceIsolatedAndIdempotent:true,...result};
+fs.writeFileSync(new URL('../../olo-inventory-unit.json',import.meta.url),JSON.stringify(report,null,2));console.log(report);

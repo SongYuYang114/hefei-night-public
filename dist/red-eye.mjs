@@ -12,6 +12,7 @@ export function redEyeSpawn(owner,obstacles=[]){
 export function createRedEye(owner,point,id){return {id,ownerSlot:redEyeActorId(owner),...point,angle:owner.angle||0,phase:'chasing',active:true,invincible:true,moving:false,travel:0,holdTime:0,holdTarget:null,caught:[],path:[],repath:0,targetSlot:null};}
 export function releaseShoeHold(actor,npcId){if(!actor||actor.shoeNpcId!==npcId)return;actor.shoeTime=0;actor.shoeNpcId=0;actor.shoeX=actor.x;actor.shoeZ=actor.z;actor.moving=false;}
 export function lockUnderShoe(actor,npc){
+ if(immuneToNegative(actor))return false;
  Object.assign(actor,{shoeTime:SHOE_HOLD_SECONDS,shoeNpcId:npc.id,shoeX:actor.x,shoeZ:actor.z,shoeAngle:actor.angle,launchTime:0,jumpTime:0,kickTime:0,healTime:0,craftTime:0,craftBlocked:true,mealActive:false,mealTime:0,eating:0,moving:false,running:false,interacting:false,swing:0,hitDelay:0,path:[],repath:0});
  if(actor.driving)resetDrive(actor);
  npc.phase='holding';npc.holdTarget=redEyeActorId(actor);npc.holdTime=SHOE_HOLD_SECONDS;npc.caught.push(npc.holdTarget);npc.x=actor.x;npc.z=actor.z;npc.angle=actor.angle;npc.moving=false;

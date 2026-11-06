@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "displayAspectRatio": "4:3",
+  "preserveOriginalImage": true,
+  "portraits": [
+    {
+      "characterId": 5,
+      "name": "欧比旺",
+      "file": "obiwan.png",
+      "size": [
+        1900,
+        2532
+      ],
+      "sha256": "cb1661057c31b7959aa3f0250e1e5fade6eaa1148d86f1adf4723b39d1e7f858"
+    },
+    {
+      "characterId": 3,
+      "name": "宋玉莹",
+      "file": "songyuying.png",
+      "size": [
+        1540,
+        2736
+      ],
+      "sha256": "fed31bb9e29a6f37125e83642d2c740c355b23f46a12081949802d0ea0ac971e"
+    },
+    {
+      "characterId": 0,
+      "name": "白给",
+      "file": "baige.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "sha256": "1c2304d3dc4be398f914b3246d34e9c1dea3c1d8b265d1bee02e3ca682b7d850"
+    },
+    {
+      "characterId": 2,
+      "name": "猪脸",
+      "file": "zhulian.png",
+      "size": [
+        1080,
+        1440
+      ],
+      "sha256": "d65ac1e34a8beca4da0fe36aa01e2d3adc56bd6b70e28752e0baebd7f75a009d"
+    },
+    {
+      "characterId": 4,
+      "name": "长腿猪脸",
+      "file": "longleg.png",
+      "size": [
+        1086,
+        1448
+      ],
+      "sha256": "f144b3fe25a3c9b0677d9a55d2dc1fd1804b0ed2cbb0cb476bb1fd7b611f9780"
+    },
+    {
+      "characterId": 1,
+      "name": "2980",
+      "file": "2980.jpg",
+      "size": [
+        1600,
+        2133
+      ],
+      "sha256": "8bdb31692b3640291f7b43540a489b9626d84b8f726636819903f952ee5eb2de"
+    },
+    {
+      "characterId": 6,
+      "name": "Olo",
+      "file": "olo.png",
+      "size": [
+        3888,
+        5184
+      ],
+      "sha256": "e9c806380c8cb58e114b097af8bd038423edc5c8d2de6f1f7e753d9c3c3ec5cb"
+    }
+  ]
+}

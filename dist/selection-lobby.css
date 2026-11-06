@@ -22,3 +22,21 @@ body:has(#lobby.hidden) #selection-team{display:none}#lobby-footer{bottom:23px;l
 @media(max-height:760px){#lobby,#selection-team{top:92px;bottom:48px;padding:14px}#character-showcase{top:92px;bottom:48px}#lobby h1{font-size:22px;margin:10px 0}#lobby .intro{margin-bottom:13px}#lobby .roles{margin-bottom:13px}#character-pool{gap:9px}.selection-avatar{height:72px}.character-card strong{padding:5px 1px;font-size:10px}#lobby .match-options{margin-top:10px;padding-top:10px}#selection-team>header{margin-bottom:12px}#room-players{gap:5px}.selection-player{min-height:49px}.selection-player .selection-avatar{height:36px;width:36px}#selection-room-hint{margin:8px 0;font-size:8px}.selection-actions .primary{padding:13px}#character-showcase>footer{min-height:108px;max-height:138px;padding:13px 16px}#selection-description{font-size:10px}#lobby-footer{bottom:15px;padding-top:9px}.topbar{padding:18px 28px}}
 @media(max-width:900px){body:has(#lobby:not(.hidden)){--pool-width:180px;--team-width:210px}#lobby{left:12px;padding:12px}#selection-team{right:12px;padding:12px}#character-showcase{left:calc(var(--pool-width) + 24px);right:calc(var(--team-width) + 24px)}#lobby .intro{font-size:8px}.character-card strong{font-size:9px;letter-spacing:0}.selection-player-info strong{font-size:10px}.selection-player-status{font-size:8px}.selection-player-info>span{font-size:8px}#selection-cooldown{font-size:8px;max-width:46%}#character-showcase h2{font-size:25px}#selection-skill{font-size:13px}.portrait-column{width:48px;height:78px}#lobby .role strong{font-size:11px}#selection-team h2{font-size:18px}#lobby-footer>span:last-child{display:none}}
 @media(max-width:700px){#character-showcase{display:flex}#lobby,#selection-team,#character-showcase{top:95px}#lobby{width:145px}#selection-team{width:160px}#character-showcase{left:165px;right:180px}#character-pool{gap:6px}.selection-avatar{height:60px}#lobby .intro,#lobby .eyebrow,#lobby .match-options>span,#lobby .role-symbol,.team-factions,#team-mode,.selection-player-status,.portrait-column{display:none}#lobby h1{font-size:18px}.selection-player{gap:5px}.selection-player .selection-avatar{width:28px;height:33px}#selection-team>header{margin-bottom:10px}#selection-cooldown{position:absolute;top:53px;right:12px;max-width:100%}#character-showcase>footer{padding:10px;max-height:150px}#selection-description{font-size:9px}.topbar{padding:16px}.brand{font-size:14px;letter-spacing:2px}.top-right{gap:8px}.version{display:none}#lobby .lobby-links{flex-direction:column;align-items:flex-start;gap:10px}#lobby-footer{left:12px;right:12px}}
+
+/* User-supplied photos: uniform 4:3 frames, full uncropped portrait and face-focused thumbnails. */
+.portrait-column{width:clamp(88px,11vw,156px);height:auto;aspect-ratio:4/3;padding:0;box-sizing:border-box}
+#selection-portrait{padding:4px 4px 18px;width:100%;height:100%;object-fit:contain}
+.selection-avatar{height:auto;aspect-ratio:4/3}
+.selection-player .selection-avatar{height:auto;aspect-ratio:4/3;width:48px}
+.selection-avatar.photo-avatar img{width:100%;height:100%;top:0;left:0;object-fit:cover}
+.photo-avatar[data-character="0"] img{object-position:45% 44%}
+.photo-avatar[data-character="2"] img{object-position:50% 40%}
+.photo-avatar[data-character="3"] img{object-position:50% 56%}
+.photo-avatar[data-character="4"] img{object-position:76% 24%;transform:scale(1.5);transform-origin:76% 24%}
+.photo-avatar[data-character="5"] img{object-position:42% 41%;transform:scale(3.1);transform-origin:42% 41%}
+@media(max-height:760px){.selection-avatar{height:auto}.selection-player .selection-avatar{width:40px;height:auto}}
+@media(max-width:900px){.portrait-column{width:88px;height:auto}}
+
+.photo-avatar[data-character="1"] img{object-position:55% 57%;transform:scale(1.25);transform-origin:55% 57%}
+
+.photo-avatar[data-character="6"] img{object-position:60% 0%;transform:scale(2.4);transform-origin:60% 20%}

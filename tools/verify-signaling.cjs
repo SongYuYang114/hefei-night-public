@@ -9,10 +9,10 @@ if ss -Hltun 'sport = :29804' | grep . >/dev/null; then exit 1; fi
 ss -Hltn 'sport = :29805' | grep . >/dev/null
 if ss -Hlun 'sport = :29805' | grep . >/dev/null; then exit 1; fi
 PID=$(cat "$BASE/signaling.pid")
-ps -p "$PID" -o args= | grep -F "$BASE/signaling-releases/1.29.0/signaling.cjs" >/dev/null
+ps -p "$PID" -o args= | grep -F "$BASE/signaling-releases/1.34.0/signaling.cjs" >/dev/null
 grep -F 'while' "$BASE/run-signaling.sh" >/dev/null
 crontab -l | grep -Fx "@reboot $BASE/start-signaling.sh" >/dev/null
-sha256sum "$BASE/signaling-releases/1.29.0/signaling.cjs"
+sha256sum "$BASE/signaling-releases/1.34.0/signaling.cjs"
 sha256sum "$BASE/tls/server.crt"
 `;
 const output=execFileSync('ssh',['-o','BatchMode=yes','-o','ConnectTimeout=10','friend@43.153.216.60','sh -s'],{input:script,encoding:'utf8',windowsHide:true});const hashes=output.trim().split('\n').map(s=>s.split(' ')[0]);

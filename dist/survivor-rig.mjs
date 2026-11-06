@@ -1,9 +1,9 @@
 import {createShoeSupportPose} from './shoe-support-pose.mjs';
 import {createMarioJumpPose} from './mario-jump-pose.mjs';
 import * as THREE from 'three';
-export const SURVIVOR_NAMES=['白给','2980','猪脸','宋玉莹','长腿猪脸','欧比旺'];
-export const SURVIVOR_ASSET_IDS=[0,1,2,3,4,5];
-export const SURVIVOR_ASSETS=['baige','2980','zhulian','songyuying','longleg','obiwan'].map(slug=>`./assets/survivor-${slug}.glb`);
+export const SURVIVOR_NAMES=['白给','2980','猪脸','宋玉莹','长腿猪脸','欧比旺','Olo'];
+export const SURVIVOR_ASSET_IDS=[0,1,2,3,4,5,6];
+export const SURVIVOR_ASSETS=['baige','2980','zhulian','songyuying','longleg','obiwan','olo'].map(slug=>`./assets/survivor-${slug}.glb`);
 export const SURVIVOR_CLIPS=['Idle','Walk','Run','HurtIdle','HurtWalk','Interact','Captured'];
 
 export function createSurvivorRig(gltf){

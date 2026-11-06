@@ -1,3 +1,4 @@
+import {isOlo} from './olo.mjs';
 import {immuneToNegative} from './vr-hunter.mjs';
 import {blocked,lineClear,distance,HUNTER_WARNING_DISTANCE,carBlocked} from './core.mjs';
 export const TELEPORT_COOLDOWN=40;
@@ -16,7 +17,8 @@ function relocate(actor,point){
 }
 // The host supplies the RNG and computes the whole plan before changing any state.
 export function teleportToTeammate(actor,hunter,{survivors=[],obstacles=[],fixtures=[],random=Math.random}={}){
- const teammates=survivors.filter(s=>s!==actor&&s.id!==actor.id&&present(s));
+ if(isOlo(actor))return {ok:false,reason:'immune'};
+ const teammates=survivors.filter(s=>!isOlo(s)&&s!==actor&&s.id!==actor.id&&present(s));
  if(!teammates.length)return {ok:false,reason:'no-teammates'};
  const teammate=teammates[Math.min(teammates.length-1,Math.floor(random()*teammates.length))];
  const rollBringHunter=random()<.5,bringHunter=rollBringHunter&&!immuneToNegative(hunter);

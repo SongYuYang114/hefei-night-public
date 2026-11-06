@@ -1,3 +1,4 @@
+import {isOlo} from './olo.mjs';
 import {carBlocked,clamp,lineClear} from './core.mjs';
 export const DRIVE_SECONDS=5,DRIVE_COOLDOWN=10,DRIVE_SPEED=10,DRIVE_WALL_BOOST=5,DRIVE_TURN_RATE=2.4;
 export const CAR_AIR_SECONDS=1.8,CAR_AIR_HEIGHT=7.5,CAR_CRASH_STUN=5;
@@ -42,7 +43,7 @@ export function stepDrivenCar(a,steer,dt,obstacles=[],targets=[],hitIds=new Set(
   if(!carBlocked({...a,x:a.x+dx,z:a.z+dz},obstacles)){a.x+=dx;a.z+=dz;a.driveTravel=(a.driveTravel||0)+Math.hypot(dx,dz);}
   const fx=Math.sin(a.angle),fz=Math.cos(a.angle);
   for(const target of orderedCats){if(target.cat.phase==='flattened'||catHitIds.has(target.cat.id))continue;const x=target.x-a.x,z=target.z-a.z;if(Math.abs(x*fz-z*fx)<=.95+target.radius&&Math.abs(x*fx+z*fz)<=1.85+target.radius&&lineClear(a,target,obstacles)){catHitIds.add(target.cat.id);if(target.cat.legendary){launchDrivenCar(a);result.legendaryHits.push(target.cat);return result;}result.catHits.push(target.cat);}}
-  for(const s of targets){if(s.state!=='active'||s.invincible>0||hitIds.has(s.id))continue;const x=s.x-a.x,z=s.z-a.z;if(Math.abs(x*fz-z*fx)<=1.3&&Math.abs(x*fx+z*fz)<=2.15&&lineClear(a,s,obstacles)){hitIds.add(s.id);result.hits.push(s);}}
+  for(const s of targets){if(isOlo(s)||s.state!=='active'||s.invincible>0||hitIds.has(s.id))continue;const x=s.x-a.x,z=s.z-a.z;if(Math.abs(x*fz-z*fx)<=1.3&&Math.abs(x*fx+z*fz)<=2.15&&lineClear(a,s,obstacles)){hitIds.add(s.id);result.hits.push(s);}}
   for(const hazard of hazards){if(!hazard.active||hazard.phase==='thrown'&&hazard.throwTime>.08)continue;const x=hazard.x-a.x,z=hazard.z-a.z;if(Math.abs(x*fz-z*fx)<=1.65&&Math.abs(x*fx+z*fz)<=2.45&&lineClear(a,hazard,obstacles)){launchDrivenCar(a);result.crushed.push(hazard);return result;}}
   left-=step;
  }

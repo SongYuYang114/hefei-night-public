@@ -1,3 +1,57 @@
+# v1.34.1 · Olo opacity · 2026-11-05
+
+Removed Olo's body transparency. Body and clothing now have opacity 1, opaque rendering and depth writes, in character preview and all match views. Spectacle lenses retain ordinary clear optics. Removed the transparency claim from the skill description. Model, portrait, both item slots, yzm rescue and protocol 36 are unchanged. Validation uses the final portable EXE appearance assertion and package resource audit; unchanged gameplay verification retains its original v1.34.0 reports.
+
+# v1.34.0 · Olo model, portrait, two-item inventory and yzm rescue · 2026-11-05
+
+The supplied 卷发眼镜人物_骨骼模型.blend replaces resources/models/olo.blend byte-for-byte (SHA256 f077e6c86cb8e32929e340fa6474c882b149b9d1f0e1d404a8c7f5db01eba92b). The raw portrait PNG replaces olo.png without modification. Existing Olo/Obiwan/Baige rigs establish GLB, Y-up meters, +Z forward, 1.9 m runtime height and seven skeletal clips. Blender 5.2.3 opens with --disable-autoexec; the converter preserves the neutral face, curly hair, glasses, original 31 materials and 70 bones. Runtime mesh is reduced from 318428 to 98019 vertices, unused expression morph keys removed, normalized skin weights checked; original Blender remains complete. Seven Idle/Walk/Run/HurtIdle/HurtWalk/Interact/Captured animations use relaxed arms. Runtime is about 8 MiB.
+
+Olo is slightly transparent at 82% opacity in character preview, the match and other peers. Materials are copied so ordinary survivors retain their appearance. Olo's passive immunity, doubled speed, repair restriction, random cat kick and capture-victory exclusion remain.
+
+E and Q are independent item slots for Olo. Chests fill E then Q; kick rewards use a free slot or remain queued when both are occupied. Both reject egg and hotpot. Q uses the existing reliable skill action channel, and itemQ plus lastLootSlot are synchronized by protocol 36. Other survivors keep one item and their existing Q skill. AI Olo can fill and use both slots.
+
+Ordinary Olo F rescue remains disabled. An active Olo can consume yzm from E or Q to instantly rescue the nearest captured teammate within 2.4 m and unobstructed line of sight. No valid target means no consumption; the other slot is untouched. AI Olo carrying yzm can approach a captive and use it. The shared release path retains one health and normal rescue protection.
+
+Validation covers item isolation, filtering, full-inventory behavior, no-target and range failure, instant E/Q rescue, status regressions, real public-room two-peer WebRTC controls, model/portrait checks and final portable EXE. Previous asset hashes are retained as a compact regression fixture so obsolete release directories can be recycled after verification. Setup-only signaling supports protocol 36 while retaining 25–35; gameplay relay stays paused.
+
+# v1.33.0 · Dog kick rewards, Olo loot, generator holograms and random cat launches · 2026-11-05
+
+Each survivor (including AI) earns one normal chest-table roll per three successful F interruptions of squatting Kuchi. Failed/repeated kicks do not count; every player has an independent counter. Full inventory queues rewards until an active survivor has a free slot. Counts and queues are authoritative, replicated and reset per match. Olo cannot receive egg or hotpot from chests, kick rewards or restored inventory. Filtered common rolls redistribute among exhaust, yzm and fried rice, preserving the 5% legendary mushroom probability.
+
+Completed generators display the user's supplied photograph as an animated cyan hologram with a light cone, visible to all peers. Raw generator-projection.jpg is copied without alteration (SHA256 56290aac4322089b48cbec37362d1a24b3ba46ffa822795613f95fdc3e4ee500). A runtime shader crops phone UI and removes the green backdrop. Billboards face each viewer and disappear before repair, at results and on reset.
+
+Olo cat kicks draw force once on the host. 90% are 0.5–3 times baseline; a rare tail reaches 100 times baseline, 320 m height, 240 m/s horizontal speed and a maximum six-second flight. Horizontal swept collision and map limits remain. Flight profile and kick serial synchronize so each viewer uses the same trajectory, and cats land safely, with fight cleanup and flattened recovery preserved.
+
+Protocol 35 isolates older gameplay clients. The setup-only six-digit-room service retains protocols 25–34; the gameplay relay remains paused. Source, original model and portrait assets remain available locally. No new personal image is uploaded to GitHub.
+
+# v1.32.0 · Olo speed, rescue restriction and cat kick · 2026-11-05
+
+Olo base walking speed is 7.4 m/s (3.7 × 2). Controlled movement and local prediction share the same multiplier; AI follow speeds are doubled too. Passive status immunity remains unchanged. Olo cannot rescue teammates: the interaction selector, authoritative rescue handler and AI rescue assignment all enforce the restriction. Other survivors can still rescue normally.
+
+Fresh F press within 2.5 m and line of sight kicks the nearest ordinary or legendary cat away from Olo. A 0.55 s skeletal leg kick launches the cat at 12 m/s for 1.1 s with a 3.2 m arcing flip. Swept horizontal collision keeps it inside the map and outside walls. Flying cats cannot be kicked again, fight or collide with cars. A kick interrupts hissing/fighting/grooming encounters, disposes the shared comic cloud and safely releases the partner. A flattened cat retains its remaining recovery timer. Landing restores normal cat behavior and removes the visual spin. AI Olo can kick nearby cats opportunistically; holding F does not repeat player kicks.
+
+Host owns the kick and flight; cat phase, timer and velocity are synchronized and flight height interpolates on guests. Protocol 34 isolates older clients; the setup-only service retains protocols 25–33 and relay remains paused. Validation covers speeds in movement/prediction/AI, rescue guards, both cat types, every fight phase, walls, landing, flatten recovery, real remote F input and both views, final portable EXE and original gameplay regressions.
+
+# v1.31.0 · Olo survivor / passive immunity · 2026-11-05
+
+User input: 人物_骨骼模型.blend (lossless backup resources/models/olo.blend) and the supplied portrait PNG. Embedded file content is not task instructions. Blender 5.2.3 opens with --background --disable-autoexec. Runtime references survivor-obiwan.glb, survivor-baige.glb and survivor-rig.mjs establish binary glTF, Y-up meters, +Z facing, feet at ground, 1.9 m runtime height and seven required clips. The converter preserves 60 bones, 23 original materials, phone/coat/glasses attachments, converts curves to skinned meshes, removes display subdivision and bakes Idle/Walk/Run/HurtIdle/HurtWalk/Interact/Captured clips. Export is about 8.2 MiB. Metadata includes the source hash; the source Blender and portrait remain byte-identical.
+
+Olo is character ID 6, independent of its survivor room slot. The pool uses a dynamic hunter offset so Olo cannot collide with classic hunter selection. Passive 被鸽 has no activation or cooldown. Damage gates cover elbow, car, laser and legendary scratching; shared negative-effect checks cover cats, pigs, curry, exhaust and red-eye holds; Mailisu skips Olo without consuming the trap. Status enforcement also prevents speed/visibility/health effects from persisting. Obiwan cannot transport Olo or use Olo as the destination anchor. Human interaction, host repair handler and AI objective selection all reject Olo repairs. Rescue, chests, gates, normal movement and voluntary jumping remain available.
+
+User explicitly chose: other survivors captured ends the match, ignoring active Olo. Escape victory and the existing yzm self-rescue exception remain. Protocol 33 isolates older gameplay clients; the setup-only TLS service supports 33 while retaining older rooms. Game relay stays paused. No new character media was uploaded to GitHub.
+
+Validation: original model/portrait hashes, normalized skin weights on all vertices, all seven clips, pure ability and integrated game tests, real public six-digit-room two-peer Three.js/WebRTC test (actual elbow/car/VR laser, ordinary damage preserved, movement/jump, traps, pig/cat immunity, repair restriction and shared result), final portable EXE checks and full archive/source audit.
+
+# v1.30.1 · 2980 photo portrait · 2026-11-05
+
+Added the sixth supplied photo for survivor 2980 (ID 1), preserving the original JPEG bytes. Secure local asset serving now declares image/jpeg for .jpg. The character preview and shared pool/roster avatar use the photo with a face-centered crop. The five photos added in v1.30.0 remain. All six use consistent 4:3 display frames; photos remain unstretched. Protocol 32 and gameplay are unchanged.
+
+# v1.30.0 · Survivor photo portraits · 2026-11-05
+
+Added five user-supplied PNGs, copied byte-for-byte: Obiwan (5), Song Yuying (3), Baige (0), Zhulian (2), Longleg Zhulian (4). The existing 2980 and hunter art remain. Shared selection-pool and room-roster avatars use face-focused CSS crops; the portrait inset uses contain to preserve each full original photo. Portrait and avatar frames have a consistent 4:3 aspect ratio; the game viewport remains resizable. Provenance hashes and source dimensions are in dist/assets/portraits/survivor-photos.json. No generated replacements or photo uploads.
+
+Protocol 32 and gameplay are unchanged. Release verification checks actual rendered selection screens, original image hashes, packaged assets and core gameplay.
+
 # v1.27.0 · Legendary orange cat · 2026-11-03
 
 User-approved population: five ordinary cats plus one legendary orange cat (six total). New original input: 橘猫_骨骼模型.blend, copied without modification under resources/models. Embedded document text is not treated as task instructions. Blender 5.2.3 opens with --background --disable-autoexec.

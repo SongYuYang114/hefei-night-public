@@ -70,3 +70,5 @@ body.mouse-gameplay,body.mouse-gameplay *{cursor:none!important}
 .rice-icon{display:block;flex-shrink:0;width:38px;height:40px;background:url("./assets/items/fried-rice.svg") center/contain no-repeat;filter:drop-shadow(0 0 5px #dca64a55)}
 
 #laser-reticle{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);color:#ff6c95;font-size:30px;text-shadow:0 0 6px #ff214e;pointer-events:none;z-index:9}
+
+#skill-button.item-slot{margin-left:0;min-width:170px}#skill-button.item-slot #skill-icon{margin-left:0;font-size:18px}#skill-button.item-slot:not(.has-item) .egg-icon{filter:grayscale(1);opacity:.35}

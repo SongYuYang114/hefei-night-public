@@ -1,3 +1,4 @@
+import {isOlo} from './olo.mjs';
 export const LIMIT=39, REQUIRED=5, DURATION=null;
 export const HUNTER_WARNING_DISTANCE=12;
 export const repairDuration=(difficulty,ai=false)=>(difficulty==='easy'?50:difficulty==='hard'?80:64)*(ai?1.25:1);
@@ -23,11 +24,11 @@ export function findPath(a,b,obs){
  if(!final)return [];const path=[];let p=final;while(key(...p)!==key(...start)){path.push({x:p[0],z:p[1]});p=parents.get(key(...p));if(!p)return [];}return path.reverse();
 }
 export function hit(hunter,survivors,obstacles){
- const candidates=survivors.filter(s=>s.state==='active'&&s.invincible<=0&&distance(hunter,s)<3.1&&lineClear(hunter,s,obstacles));
+ const candidates=survivors.filter(s=>!isOlo(s)&&s.state==='active'&&s.invincible<=0&&distance(hunter,s)<3.1&&lineClear(hunter,s,obstacles));
  candidates.sort((a,b)=>distance(hunter,a)-distance(hunter,b));
  return candidates.find(s=>{const angle=Math.atan2(s.x-hunter.x,s.z-hunter.z);return Math.cos(angle-hunter.angle)>.2;})||null;
 }
-export function outcome(survivors,time){const escaped=survivors.filter(s=>s.state==='escaped').length,resolved=survivors.length>0&&survivors.every(s=>['escaped','eliminated','captured'].includes(s.state));if(escaped>=3)return 'survivor';if(survivors.some(s=>s.state==='captured'&&s.item==='yzm'))return null;if(survivors.some(s=>s.state==='captured')&&survivors.every(s=>['captured','escaped'].includes(s.state)))return 'hunter';if(resolved)return escaped===2?'draw':'hunter';return null;}
+export function outcome(survivors,time){const escaped=survivors.filter(s=>s.state==='escaped').length,resolved=survivors.length>0&&survivors.every(s=>['escaped','eliminated','captured'].includes(s.state));if(escaped>=3)return 'survivor';if(survivors.some(s=>s.state==='captured'&&s.item==='yzm'))return null;const capturable=survivors.filter(s=>!isOlo(s));if(capturable.some(s=>s.state==='captured')&&capturable.every(s=>['captured','escaped'].includes(s.state)))return 'hunter';if(resolved)return escaped===2?'draw':'hunter';return null;}
 export function carBlocked(car,obstacles){
  const f={x:Math.sin(car.angle),z:Math.cos(car.angle)},r={x:f.z,z:-f.x};
  const rx=CAR_HALF_LENGTH*Math.abs(f.x)+CAR_HALF_WIDTH*Math.abs(r.x),rz=CAR_HALF_LENGTH*Math.abs(f.z)+CAR_HALF_WIDTH*Math.abs(r.z);
@@ -40,7 +41,7 @@ export function createCarRush(actor){return {x:actor.x,z:actor.z,origin:{x:actor
 export function stepCarRush(car,dt,obstacles,survivors){
  const hits=[];if(!car.active)return {hits,blocked:false};const fx=Math.sin(car.angle),fz=Math.cos(car.angle);
  let left=Math.min(CAR_SPEED*dt,CAR_RANGE-car.travel),collision=false;
- function collect(){for(const s of survivors){if(s.state!=='active'||s.invincible>0||car.hitIds.has(s.id))continue;
+ function collect(){for(const s of survivors){if(isOlo(s)||s.state!=='active'||s.invincible>0||car.hitIds.has(s.id))continue;
   // A summoned vehicle damages only the forward path, not people behind its caster.
   if((s.x-car.origin.x)*fx+(s.z-car.origin.z)*fz<.45)continue;
   const dx=s.x-car.x,dz=s.z-car.z;
