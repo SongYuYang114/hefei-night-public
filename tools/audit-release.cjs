@@ -12,4 +12,6 @@ for (const file of ['main.cjs','preload.cjs','release.config.json','launcher/ind
 }
 assert(!files.some(n=> /(^|\/)(\.local|hefei-runtime\.json|runtime\.json|update-private\.pem)(\/|$)/.test(n)), 'Private configuration must not be packaged.');
 assert.equal(JSON.parse(asar.extractFile(archive,'package.json')).version,version);
+const baseline=JSON.parse(fs.readFileSync(path.join(root,'resources/baseline-assets-v1.33.json'),'utf8'));
+assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,'dist/vendor/THREE-LICENSE.md'))).digest('hex'),baseline['dist/vendor/THREE-LICENSE.md'],'Original license bytes must be preserved.');
 console.log(JSON.stringify({passed:true,version,packedFiles:files.length,privateConfigurationExcluded:true}));
