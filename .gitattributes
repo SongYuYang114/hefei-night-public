@@ -13,3 +13,4 @@
 *.ico binary
 *.ogg binary
 *.oga binary
+dist/vendor/THREE-LICENSE.md -text
